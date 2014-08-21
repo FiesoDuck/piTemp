@@ -9,10 +9,10 @@
 <script src="../libraries/RGraph.thermometer.js" ></script>
 <script type="text/javascript">
 var schalter = "off";													// Schalter initiieren 
-var moehre = 0;															// Schleifenzähler nicht i!!! wird in graph-script verwendet 										
+var moehre = 0;															// Schleifenzaehler nicht i!!! wird in graph-script verwendet 										
 var deviceid;
 
-// Daten aus json lesen, abhängig von User Eingabe
+// Daten aus json lesen, abhaengig von User Eingabe
 function getData(deviceurl){	
 	var data;
 	var jsonurl = './tnow_' + deviceurl + '.json';
@@ -23,10 +23,10 @@ function getData(deviceurl){
 		$.ajax({
 			type: "GET",
 			url: jsonurl,													// Daten-Stream url
-			data: data,														// Variable für json Container
+			data: data,														// Variable fuer json Container
 			async: true,										
 			dataType: "json",
-			success: function(data){										// nur ausführen wenn getJson (hier ajax) erfolgreich war
+			success: function(data){										// nur ausfuehren wenn getJson (hier ajax) erfolgreich war
 				moehre++;
 				var celsius = data.temperature_record[0].celsius;
 				var unix_time = data.temperature_record[0].unix_time;
@@ -40,7 +40,7 @@ function getData(deviceurl){
 			});
 		}
 			
-	else if (schalter == "clear") {											// Daten löschen
+	else if (schalter == "clear") {											// Daten loeschen
 		$('#temp').text("keine Daten");
 		console.log("getData  | %o", schalter);
 		graph(schalter, "0.0");
@@ -78,7 +78,7 @@ function choose(choice){
 		else {
 			schalter = choice;
 			console.log("Choose   | %o | %o",  schalter, deviceid);
-			getData(deviceid);													// Daten Abfrage starten (abhängig von Eingabe (schalter variable)
+			getData(deviceid);													// Daten Abfrage starten (abhaengig von Eingabe (schalter variable)
 		}
 }
 
@@ -108,7 +108,7 @@ function graph (schalter, celsius) {
 </head>
 <body>
 <div id="container">
-<img src="img/logo_gwk.png"/></a>
+<img src="img/banner.png"/></a>
 	<nav>
 		<ul>
 			<li><a href="simplebar.htm">read temperature</a></li>
