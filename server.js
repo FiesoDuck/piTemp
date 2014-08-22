@@ -8,7 +8,7 @@ var staticServer = new nodestatic.Server("html"); // Setup static server for "ht
 var child;
 var moehre = 1;
 var array = fs.readFileSync('devices.txt').toString().split("\n");
-var testarray;
+var data;
 
 // Datei einlesen für Device config
 function readDatei(txtfile, callback){
@@ -43,22 +43,28 @@ console.log("Get ausgeführt");
 return datenr;
 }
 
-// Read current temperature from sensor
-function readTemp(deviceid,callback){
-var temp1 = function() {
-	child = exec("python ./temp.py", function (error, stdout, stderr) {
-			console.log('stdout: ' + stdout);
-			var temp = stdout;
-			temp = Math.round(temp * 10) / 10;
-			console.log(temp);
-		});
-	console.log(temp);
+// Temperatur auslesen. device steht für das script, welches den richtigen sensor abfragt.
+// da dies asynchron passiert wird callback benoetigt, bei callback wird die temp
+// zurück an die stelle des aufrufs geschickt
+
+function readTemp(id, callback){
+var device = "python scripts/./temp"+[id]+".py";
+child = exec(device, function (error, stdout, stderr) {
+	console.log("id:", id);
+	var temp = {};
+	temp[id] = stdout;
+	temp[id] = Math.round(temp[id] * 10) / 10;
+	callback(temp[id]);
+	});
 };
-}
-function testfunc(){
-	readTemp(9,function(data){testarray = data;});
-	console.log("hier");
-	return testarray;
+
+// Ruft readTemp auf.
+function loopi(){
+var id = [1,2,3,4,5,6,7,8];
+readTemp(id[1], function(temp2){
+	console.log(temp2);
+	loopi();
+	});
 }
 
 // Setup node http server
@@ -145,5 +151,4 @@ var server = http.createServer(
 server.listen(8000);
 // Log message
 console.log('Server running at :8000');
-testfunc();
-//console.log(testarray);
+loopi();
