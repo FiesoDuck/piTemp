@@ -8,6 +8,7 @@ var staticServer = new nodestatic.Server("html"); // Setup static server for "ht
 var child;
 var moehre = 1;
 var array = fs.readFileSync('devices.txt').toString().split("\n");
+var testarray;
 
 // Datei einlesen für Device config
 function readDatei(txtfile, callback){
@@ -44,62 +45,21 @@ return datenr;
 
 // Read current temperature from sensor
 function readTemp(deviceid,callback){
-	if (deviceid == 9) {
-		child = exec("python ./temp.py", function (error, stdout, stderr) {
-			  console.log('stdout: ' + stdout);
-			  var temp = stdout;
-		// Round to one decimal place
-		temp = Math.round(temp * 10) / 10;
-		console.log(temp);
-		// Add date/time to temperature
-			var data = {
-					temperature_record:[{
-					unix_time: Date.now(),
-					celsius: temp
-					}]};
-
-			  // Execute call back with data
-			  callback(data);
-				});
-		}
-	else {	
-		if (deviceid == 1) {
-			var sensordevice = "/sys/bus/w1/devices/"+array[0]+"/w1_slave";
-		}
-		else if (deviceid == 2) {
-			var sensordevice = "/sys/bus/w1/devices/"+array[1]+"/w1_slave";
-		}	
-		fs.readFile(sensordevice, function(err, buffer)
-		{
-		if (err){
-			console.log("Device nicht gefunden!");
-			console.error(err);
-			//process.exit(1); 
-			var data = {
-				temperature_record:[{
-				unix_time: Date.now(),
-				celsius: "NaN"
-				}]};
-			}
-		else {
-		// Read data from file (using fast node ASCII encoding).
-		var data = buffer.toString('ascii').split(" "); // Split by space
-		// Extract temperature from string and divide by 1000 to give celsius
-		var temp  = parseFloat(data[data.length-1].split("=")[1])/1000.0;
-		// Round to one decimal place
-		temp = Math.round(temp * 10) / 10;
-		// Add date/time to temperature
-		var data = {
-			temperature_record:[{
-			unix_time: Date.now(),
-			celsius: temp
-			}]};
-			// Execute call back with data
-			callback(data);
-		}
-	   });
-   }
+var temp1 = function() {
+	child = exec("python ./temp.py", function (error, stdout, stderr) {
+			console.log('stdout: ' + stdout);
+			var temp = stdout;
+			temp = Math.round(temp * 10) / 10;
+			console.log(temp);
+		});
+	console.log(temp);
 };
+}
+function testfunc(){
+	readTemp(9,function(data){testarray = data;});
+	console.log("hier");
+	return testarray;
+}
 
 // Setup node http server
 var i = 0;
@@ -119,12 +79,10 @@ var server = http.createServer(
 		
       // Test to see if it's a request for current temperature   
       if (subpath == 'tnow_'){
-            readTemp(deviceid,function(data){
-			      response.writeHead(200, { "Content-type": "application/json" });		
-			      response.end(JSON.stringify(data), "ascii");
-				  i ++;
-				  console.log('Geschrieben!', i);
-               });
+			response.writeHead(200, { "Content-type": "application/json" });		
+			response.end(JSON.stringify(testarray), "ascii");
+			i ++;
+			console.log('Geschrieben!', i);
       return;
       }
 
@@ -187,3 +145,5 @@ var server = http.createServer(
 server.listen(8000);
 // Log message
 console.log('Server running at :8000');
+testfunc();
+//console.log(testarray);
