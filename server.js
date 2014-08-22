@@ -6,9 +6,10 @@ var exec = require('child_process').exec;
 var nodestatic = require('node-static');
 var staticServer = new nodestatic.Server("html"); // Setup static server for "html" directory
 var child;
-var moehre = 1;
+var moehre = 0;
 var array = fs.readFileSync('devices.txt').toString().split("\n");
 var data;
+id = [1,2,3,4,5,6,7,8];
 
 // Datei einlesen für Device config
 function readDatei(txtfile, callback){
@@ -50,21 +51,22 @@ return datenr;
 function readTemp(id, callback){
 var device = "python scripts/./temp"+[id]+".py";
 child = exec(device, function (error, stdout, stderr) {
-	console.log("id:", id);
 	var temp = {};
 	temp[id] = stdout;
 	temp[id] = Math.round(temp[id] * 10) / 10;
+	if (moehre < 4) {moehre++}
+	else {moehre = 0};
 	callback(temp[id]);
+	loopi();
 	});
 };
 
 // Ruft readTemp auf.
 function loopi(){
-var id = [1,2,3,4,5,6,7,8];
-readTemp(id[1], function(temp2){
-	console.log(temp2);
-	loopi();
-	});
+readTemp(id[moehre], function(temp){
+	console.log("loopi: ", temp, "id:", moehre);
+	}
+);	
 }
 
 // Setup node http server
