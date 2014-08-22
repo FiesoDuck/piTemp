@@ -115,7 +115,7 @@ var server = http.createServer(
 		var daten = url_parts.query;
 		var subpath = pathfile.substr(1, 5);
 		var deviceid = pathfile.substr(6).replace(".json","");
-		//console.log('Path: ', pathfile);
+		console.log('Path: ', pathfile);
 		
       // Test to see if it's a request for current temperature   
       if (subpath == 'tnow_'){
