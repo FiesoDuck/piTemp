@@ -7,9 +7,10 @@ var nodestatic = require('node-static');
 var staticServer = new nodestatic.Server("html"); // Setup static server for "html" directory
 var child;
 var moehre = 0;
+var temparray = {};
 var array = fs.readFileSync('devices.txt').toString().split("\n");
-var data;
-id = [1,2,3,4,5,6,7,8];
+var tempid = ["t1","t2","t3","t4","t5","t6","t7","t8"];
+data = {t1:[], t2:[], t3:[], t4:[], t5:[], t6:[], t7:[]};
 
 // Datei einlesen für Device config
 function readDatei(txtfile, callback){
@@ -48,23 +49,28 @@ return datenr;
 // da dies asynchron passiert wird callback benoetigt, bei callback wird die temp
 // zurück an die stelle des aufrufs geschickt
 
-function readTemp(id, callback){
-var device = "python scripts/./temp"+[id]+".py";
+function readTemp(tempid, callback){
+var device = "python scripts/./"+[tempid]+".py";
 child = exec(device, function (error, stdout, stderr) {
 	var temp = {};
-	temp[id] = stdout;
-	temp[id] = Math.round(temp[id] * 10) / 10;
-	if (moehre < 4) {moehre++}
+	temp[tempid] = stdout;
+	temp[tempid] = Math.round(temp[tempid] * 10) / 10;
+	if (moehre <= 6) {moehre++}
 	else {moehre = 0};
-	callback(temp[id]);
+	callback(temp[tempid]);
 	loopi();
 	});
 };
 
 // Ruft readTemp auf.
 function loopi(){
-readTemp(id[moehre], function(temp){
-	console.log("loopi: ", temp, "id:", moehre);
+readTemp(tempid[moehre], function(temp){
+	temparray[tempid] = temp;
+	var key = temparray[tempid]
+	data[tempid] = key;
+	console.log(key);
+	//console.log(temparray[tempid]);
+    console.log(data);
 	}
 );	
 }

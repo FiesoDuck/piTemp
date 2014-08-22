@@ -6,5 +6,5 @@ ser.write("\x72\x07\xee\x00\x04\x00\x6b")
 time.sleep(0.5)
 read = ser.read(8)
 moehre = read.encode('hex')[10:14]
-print int(moehre,16) * 130.0 / 16384.0
+print int(moehre,16) * 130.0 / 1000.0
 ser.close()
