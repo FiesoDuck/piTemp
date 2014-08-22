@@ -16,8 +16,8 @@ thermometer = new Array();
 // Auswahl Benutzereingabe
 function choose(choice){
 	schalter = choice;
-	if (document.getElementById('g0c').checked) {getData(1,"g0",1)}
-	if (document.getElementById('g1c').checked) {getData(2,"g1",2)}
+	if (document.getElementById('g0c').checked) {getData(0,"g0",0)}
+	if (document.getElementById('g1c').checked) {getData(1,"g1",1)}
 }
 
 // Daten aus json lesen, abhängig von User Eingabe
@@ -36,11 +36,10 @@ function getData(deviceurl,gid,tid){
 			dataType: "json",
 			success: function(data){										// nur ausführen wenn getJson (hier ajax) erfolgreich war
 				moehre++;
-				var celsius = data.temperature_record[0].celsius;
-				var unix_time = data.temperature_record[0].unix_time;
+				var celsius = data.temperature_record[tid];
 				
 				console.log('getData  | %o | Angekommen | %o', schalter, moehre);
-				ausgeben(deviceurl, celsius, gid, tid);
+				//ausgeben(deviceurl, celsius, gid, tid);
 				graph(schalter, celsius, gid, tid);
 				if (schalter == 'update') {schalter = "nan";}				// damit keine schleife entsteht
 			},
@@ -62,9 +61,9 @@ function getData(deviceurl,gid,tid){
 function ausgeben(deviceid, celsius, gid, tid) {	
 	if (schalter == "on") {
 		getData(deviceid, gid, tid);														// hier startet loop
-		$('#temp').text(celsius);
-		console.log("Ausgeben | %o", schalter);
-		divvv.style.backgroundColor = '#99FF33';
+		//$('#temp').text(celsius);
+		//console.log("Ausgeben | %o", schalter);
+		//divvv.style.backgroundColor = '#99FF33';
 	}
 	else if (schalter == "off") {												// loop stoppen
 		console.log("Ausgeben | %o", schalter);	
@@ -99,14 +98,14 @@ function graph (schalter, celsius, gid, tid) {
 }
 
 function graphinit() {
-graph("on", 0.0, "g0", 1);
-graph("on", 0.0, "g1", 2);
-graph("on", 0.0, "g2", 3);
-graph("on", 0.0, "g3", 4);
-graph("on", 0.0, "g4", 5);
-graph("on", 0.0, "g5", 6);
-graph("on", 0.0, "g6", 7);
-graph("on", 0.0, "g7", 8);
+graph("on", 0.0, "g0", 0);
+graph("on", 0.0, "g1", 1);
+graph("on", 0.0, "g2", 2);
+graph("on", 0.0, "g3", 3);
+graph("on", 0.0, "g4", 4);
+graph("on", 0.0, "g5", 5);
+graph("on", 0.0, "g6", 6);
+graph("on", 0.0, "g7", 7);
 }
 </script>
 </head>

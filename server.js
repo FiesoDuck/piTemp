@@ -10,7 +10,8 @@ var moehre = 0;
 var temparray = {};
 var array = fs.readFileSync('devices.txt').toString().split("\n");
 var tempid = ["t1","t2","t3","t4","t5","t6","t7","t8"];
-data = {t1:[], t2:[], t3:[], t4:[], t5:[], t6:[], t7:[]};
+data2 = {temperature_record:[0,0,0,0,0,0,0,0]};
+console.log(data2);
 
 // Datei einlesen für Device config
 function readDatei(txtfile, callback){
@@ -55,9 +56,9 @@ child = exec(device, function (error, stdout, stderr) {
 	var temp = {};
 	temp[tempid] = stdout;
 	temp[tempid] = Math.round(temp[tempid] * 10) / 10;
+	callback(temp[tempid]);
 	if (moehre <= 6) {moehre++}
 	else {moehre = 0};
-	callback(temp[tempid]);
 	loopi();
 	});
 };
@@ -67,10 +68,8 @@ function loopi(){
 readTemp(tempid[moehre], function(temp){
 	temparray[tempid] = temp;
 	var key = temparray[tempid]
-	data[tempid] = key;
-	console.log(key);
-	//console.log(temparray[tempid]);
-    console.log(data);
+	data2.temperature_record[moehre]=key;
+	console.log(data2);
 	}
 );	
 }
@@ -94,7 +93,7 @@ var server = http.createServer(
       // Test to see if it's a request for current temperature   
       if (subpath == 'tnow_'){
 			response.writeHead(200, { "Content-type": "application/json" });		
-			response.end(JSON.stringify(testarray), "ascii");
+			response.end(JSON.stringify(data2), "ascii");
 			i ++;
 			console.log('Geschrieben!', i);
       return;
