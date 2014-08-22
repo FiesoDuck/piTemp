@@ -91,7 +91,7 @@ var server = http.createServer(
 		console.log('Path: ', pathfile);
 		
       // Test to see if it's a request for current temperature   
-      if (subpath == 'tnow_'){
+      if (request.url == '/tnow.json'){
 			response.writeHead(200, { "Content-type": "application/json" });		
 			response.end(JSON.stringify(data2), "ascii");
 			i ++;

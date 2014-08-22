@@ -16,14 +16,20 @@ thermometer = new Array();
 // Auswahl Benutzereingabe
 function choose(choice){
 	schalter = choice;
-	if (document.getElementById('g0c').checked) {getData(0,"g0",0)}
-	if (document.getElementById('g1c').checked) {getData(1,"g1",1)}
+	if (document.getElementById('g0c').checked) {getData("g0",0)}
+	if (document.getElementById('g1c').checked) {getData("g1",1)}
+	if (document.getElementById('g2c').checked) {getData("g2",2)}
+	if (document.getElementById('g3c').checked) {getData("g3",3)}
+	if (document.getElementById('g4c').checked) {getData("g4",4)}
+	if (document.getElementById('g5c').checked) {getData("g5",5)}
+	if (document.getElementById('g6c').checked) {getData("g6",6)}
+	if (document.getElementById('g7c').checked) {getData("g7",7)}
 }
 
 // Daten aus json lesen, abhängig von User Eingabe
-function getData(deviceurl,gid,tid){	
+function getData(gid,tid){	
 	var data;
-	var jsonurl = './tnow_' + deviceurl + '.json';
+	var jsonurl = './tnow.json';
 	console.log('Url    | %o', jsonurl);
 	
 	console.log('getData  | %o | Aufruf', schalter);
@@ -58,9 +64,9 @@ function getData(deviceurl,gid,tid){
 }	
 	
 // Anzeigen von Daten aufgrund von User Eingabe, Aufruf durch getData()
-function ausgeben(deviceid, celsius, gid, tid) {	
+function ausgeben(celsius, gid, tid) {	
 	if (schalter == "on") {
-		getData(deviceid, gid, tid);														// hier startet loop
+		getData(gid, tid);														// hier startet loop
 		//$('#temp').text(celsius);
 		//console.log("Ausgeben | %o", schalter);
 		//divvv.style.backgroundColor = '#99FF33';
