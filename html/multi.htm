@@ -10,6 +10,7 @@
 <script src="../libraries/RGraph.thermometer.js" ></script>
 <script type="text/javascript">													// Schalter initiieren 
 var moehre = 0;		
+var timevar = 200;
 thermometer = {};
 
 function initGraph (json) {
@@ -43,6 +44,7 @@ $.ajax({
 function ausgeben () {
 if (moehre == 8) {
 	moehre = 0;
+	//RGraph.reset(thermometer[moehre]);
 	getData();
 	}
 else {
@@ -50,7 +52,7 @@ else {
 	thermometer[moehre].value = celsius[moehre]; 
 	thermometer[moehre].grow();
 	moehre++;
-	setTimeout(ausgeben, 100);
+	setTimeout(ausgeben, timevar);
 }
 }	
 </script>
