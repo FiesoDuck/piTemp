@@ -8,82 +8,51 @@
 <script src="../libraries/RGraph.common.core.js" ></script>
 <script src="../libraries/RGraph.common.effects.js" ></script>
 <script src="../libraries/RGraph.thermometer.js" ></script>
-<script type="text/javascript">
-var schalter = "off";													// Schalter initiieren 
+<script type="text/javascript">													// Schalter initiieren 
 var moehre = 0;		
-aktiv = 0;
-celsius = {};													// Schleifenzähler nicht i!!! wird in graph-script verwendet 										
-thermometer = new Array();
+thermometer = {};
 
-function lade(wahl){
-if (wahl == "on") {
-aktiv = setInterval(function(){getData()}, 2000);
-	}
-else if (wahl == "off") {clearInterval(aktiv)};
-}
-	
-// Auswahl Benutzereingabe
-function choose(choice){
-	schalter = choice;
-	if (document.getElementById('g0c').checked) {graph(schalter, celsius[1], "g1", 1);}
-	if (document.getElementById('g1c').checked) {graph(schalter, celsius[2], "g2", 2);}
-	if (document.getElementById('g2c').checked) {graph(schalter, celsius[3], "g3", 3);}
-	if (document.getElementById('g3c').checked) {graph(schalter, celsius[4], "g4", 4);}
-	if (document.getElementById('g5c').checked) {getData("g5",5)}
-	if (document.getElementById('g6c').checked) {getData("g6",6)}
-	if (document.getElementById('g7c').checked) {getData("g7",7)}
+function initGraph (json) {
+thermometer[0] = new RGraph.Thermometer({id: 'g0', min: 0, max: 100, value: 0}).draw();
+thermometer[1] = new RGraph.Thermometer({id: 'g1', min: 0, max: 400, value: 0}).draw();	
+thermometer[2] = new RGraph.Thermometer({id: 'g2', min: 0, max: 100, value: 0}).draw();
+thermometer[3] = new RGraph.Thermometer({id: 'g3', min: 0, max: 100, value: 0}).draw();		
+thermometer[4] = new RGraph.Thermometer({id: 'g4', min: 0, max: 100, value: 0}).draw();
+thermometer[5] = new RGraph.Thermometer({id: 'g5', min: 0, max: 100, value: 0}).draw();
+thermometer[6] = new RGraph.Thermometer({id: 'g6', min: 0, max: 100, value: 0}).draw();
+thermometer[7] = new RGraph.Thermometer({id: 'g7', min: 0, max: 100, value: 0}).draw();        	
 }
 
-// Daten aus json lesen, abhängig von User Eingabe
 function getData(){	
-	var data;
-	var jsonurl = './tnow.json';
-	console.log('getData  | %o | Aufruf', schalter);
-		$.ajax({
-			type: "GET",
-			url: jsonurl,													// Daten-Stream url
-			data: data,														// Variable für json Container
-			async: true,										
-			dataType: "json",
-			success: function(data){										// nur ausführen wenn getJson (hier ajax) erfolgreich war
-				moehre++;
-				celsius = data.temperature_record;
-			},
-			error: function(){alert('Der Server antwortet nicht!');}
-			});	
+var data;
+var jsonurl = './tnow.json';
+$.ajax({
+	type: "GET",
+	url: jsonurl,	// Daten-Stream url
+	data: data,	// Variable für json Container
+	async: true,	
+	dataType: "json",
+	success: function(data){	// nur ausführen wenn getJson (hier ajax) erfolgreich war
+	celsius = data.temperature_record;
+	ausgeben();
+	},
+	error: function(){alert('Der Server antwortet nicht!');}
+	});	
 }	
-	
-function graph (schalter, celsius, gid, tid) {	
-	if (schalter == "on" || schalter == "update") {
-		var value = celsius;
-			if (typeof thermometer[tid] == 'undefined') {
-				thermometer[tid]= new RGraph.Thermometer({id: gid, min: 0, max: 50, value: value});
-			} 
-			else {
-				thermometer[tid].value = value;
-			}
-			thermometer[tid].grow()				
-			}
-		else if (schalter == "off")
-		{
-		}
-		else if (schalter == "clear")
-		{
-		graph("on", 0.0, gid, tid);
-		console.log("Graph    | %o", schalter);
-		}
-}
 
-function graphinit() {
-graph("on", 0.0, "g0", 0);
-graph("on", 0.0, "g1", 1);
-graph("on", 0.0, "g2", 2);
-graph("on", 0.0, "g3", 3);
-graph("on", 0.0, "g4", 4);
-graph("on", 0.0, "g5", 5);
-graph("on", 0.0, "g6", 6);
-graph("on", 0.0, "g7", 7);
+function ausgeben () {
+if (moehre == 8) {
+	moehre = 0;
+	getData();
+	}
+else {
+	console.log(moehre);
+	thermometer[moehre].value = celsius[moehre]; 
+	thermometer[moehre].grow();
+	moehre++;
+	setTimeout(ausgeben, 100);
 }
+}	
 </script>
 </head>
 <body>
@@ -98,36 +67,11 @@ graph("on", 0.0, "g7", 7);
 	</nav>
   <aside>
 	<div id="buttons">
-		<b>choose device:</b>
-		<p>
-		Temp 1 <input id="g0c" name="g0c" type="checkbox" autocomplete="off"/><br>
-		Temp 2 <input id="g1c" name="g1c" type="checkbox" autocomplete="off"/><br>
-		Temp 3 <input id="g2c" name="g2c" type="checkbox"/><br>
-		Temp 4 <input id="g3c" name="g3c" type="checkbox"/><br>
-		Temp 5 <input id="g4c" name="g4c" type="checkbox"/><br>
-		Temp 6 <input id="g5c" name="g5c" type="checkbox"/><br>
-		Temp 7 <input id="g6c" name="g6c" type="checkbox"/><br>
-		Temp 8 <input id="g7c" name="g7c" type="checkbox"/>
-		<br>
-		<p>
-		<b>control device:</b>
-		<br>
-		<button onClick="choose('on')">On</button>
-		<button onClick="choose('off')">Off</button>
-		<br>
-		<button onClick="choose('update')">update</button>
-		<button onClick="choose('clear')">clear</button>
-		<br>
-		<br>
-		<button onClick="lade('on')">Laden On</button>
-		<button onClick="lade('off')">Laden Off</button>
 	</div>	
 </aside>
 <section id="content">
 	<article>	
 		<div id="log">	
-		<h1><span id="logback">Temperatur</span></h></div>
-		<div id="temp">keine Daten</div>
 		<canvas id="g0" width="80" height="300">[No canvas support]</canvas>
 		<canvas id="g1" width="80" height="300">[No canvas support]</canvas> 
 		<canvas id="g2" width="80" height="300">[No canvas support]</canvas> 
@@ -141,6 +85,6 @@ graph("on", 0.0, "g7", 7);
 <footer>		
 </footer>
 </div>
-	<script>graphinit(); var divvv = document.getElementById('logback');</script>
+<script>initGraph(); getData();</script>
 	</body>
 </html>
