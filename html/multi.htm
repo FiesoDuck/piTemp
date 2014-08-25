@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+<link rel="icon" type="image/gif" href="img/favicon.png" />
 <link rel="stylesheet" type="text/css" href="style.css">
 <title>piTemp</title>
 <script src="../libraries/jquery-1.8.3.min.js" type="text/javascript"></script>
@@ -9,30 +10,35 @@
 <script src="../libraries/RGraph.thermometer.js" ></script>
 <script type="text/javascript">
 var schalter = "off";													// Schalter initiieren 
-var moehre = 0;															// Schleifenzähler nicht i!!! wird in graph-script verwendet 										
+var moehre = 0;		
+aktiv = 0;
+celsius = {};													// Schleifenzähler nicht i!!! wird in graph-script verwendet 										
 thermometer = new Array();
 
+function lade(wahl){
+if (wahl == "on") {
+aktiv = setInterval(function(){getData()}, 2000);
+	}
+else if (wahl == "off") {clearInterval(aktiv)};
+}
+	
 // Auswahl Benutzereingabe
 function choose(choice){
 	schalter = choice;
-	if (document.getElementById('g0c').checked) {getData("g0",0)}
-	if (document.getElementById('g1c').checked) {getData("g1",1)}
-	if (document.getElementById('g2c').checked) {getData("g2",2)}
-	if (document.getElementById('g3c').checked) {getData("g3",3)}
-	if (document.getElementById('g4c').checked) {getData("g4",4)}
+	if (document.getElementById('g0c').checked) {graph(schalter, celsius[1], "g1", 1);}
+	if (document.getElementById('g1c').checked) {graph(schalter, celsius[2], "g2", 2);}
+	if (document.getElementById('g2c').checked) {graph(schalter, celsius[3], "g3", 3);}
+	if (document.getElementById('g3c').checked) {graph(schalter, celsius[4], "g4", 4);}
 	if (document.getElementById('g5c').checked) {getData("g5",5)}
 	if (document.getElementById('g6c').checked) {getData("g6",6)}
 	if (document.getElementById('g7c').checked) {getData("g7",7)}
 }
 
 // Daten aus json lesen, abhängig von User Eingabe
-function getData(gid,tid){	
+function getData(){	
 	var data;
 	var jsonurl = './tnow.json';
-	console.log('Url    | %o', jsonurl);
-	
 	console.log('getData  | %o | Aufruf', schalter);
-	if (schalter == 'update' || schalter == 'on') {							// nur Daten laden wenn "update" oder "on" vorliegt um Traffic zu vermeiden
 		$.ajax({
 			type: "GET",
 			url: jsonurl,													// Daten-Stream url
@@ -41,46 +47,12 @@ function getData(gid,tid){
 			dataType: "json",
 			success: function(data){										// nur ausführen wenn getJson (hier ajax) erfolgreich war
 				moehre++;
-				var celsius = data.temperature_record[tid];
-				
-				console.log('getData  | %o | Angekommen | %o', schalter, moehre);
-				//ausgeben(deviceurl, celsius, gid, tid);
-				graph(schalter, celsius, gid, tid);
-				if (schalter == 'update') {schalter = "nan";}				// damit keine schleife entsteht
+				celsius = data.temperature_record;
 			},
 			error: function(){alert('Der Server antwortet nicht!');}
-			});
-		}
-			
-	else if (schalter == "clear") {											// Daten löschen
-		$('#temp').text("keine Daten");
-		console.log("getData  | %o", schalter);
-		graph(schalter, "0.0");
-		divvv.style.backgroundColor = 'white';
-	}
-			
-	else {console.log('getData  | %o | Abbruch', schalter);}		
+			});	
 }	
 	
-// Anzeigen von Daten aufgrund von User Eingabe, Aufruf durch getData()
-function ausgeben(celsius, gid, tid) {	
-	if (schalter == "on") {
-		getData(gid, tid);														// hier startet loop
-		//$('#temp').text(celsius);
-		//console.log("Ausgeben | %o", schalter);
-		//divvv.style.backgroundColor = '#99FF33';
-	}
-	else if (schalter == "off") {												// loop stoppen
-		console.log("Ausgeben | %o", schalter);	
-		divvv.style.backgroundColor = '#FF4D4D';
-	}
-	else if (schalter == "update") {											// einmaliges updaten der Daten
-		console.log("Ausgeben | %o", schalter);									// da schaler=="update" in getData()
-		$('#temp').text(celsius);												// auf schalter=="nan" gesetzt wird
-		divvv.style.backgroundColor = 'white';
-	}			
-}
-
 function graph (schalter, celsius, gid, tid) {	
 	if (schalter == "on" || schalter == "update") {
 		var value = celsius;
@@ -145,6 +117,10 @@ graph("on", 0.0, "g7", 7);
 		<br>
 		<button onClick="choose('update')">update</button>
 		<button onClick="choose('clear')">clear</button>
+		<br>
+		<br>
+		<button onClick="lade('on')">Laden On</button>
+		<button onClick="lade('off')">Laden Off</button>
 	</div>	
 </aside>
 <section id="content">

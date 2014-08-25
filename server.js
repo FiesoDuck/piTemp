@@ -69,7 +69,6 @@ readTemp(tempid[moehre], function(temp){
 	temparray[tempid] = temp;
 	var key = temparray[tempid]
 	data2.temperature_record[moehre]=key;
-	console.log(data2);
 	}
 );	
 }
@@ -88,7 +87,6 @@ var server = http.createServer(
 		var daten = url_parts.query;
 		var subpath = pathfile.substr(1, 5);
 		var deviceid = pathfile.substr(6).replace(".json","");
-		console.log('Path: ', pathfile);
 		
       // Test to see if it's a request for current temperature   
       if (request.url == '/tnow.json'){
@@ -124,15 +122,7 @@ var server = http.createServer(
 			}); 
 		}
 		
-      // Handler for favicon.ico requests
-		if (pathfile == '/favicon.ico'){
-			response.writeHead(200, {'Content-Type': 'image/x-icon'});
-			response.end();
 
-			// Optionally log favicon requests.
-			//console.log('favicon requested');
-			return;
-		}
 
 		else {
 			// Print requested file to terminal
