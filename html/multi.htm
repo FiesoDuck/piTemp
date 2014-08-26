@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
 <link rel="icon" type="image/gif" href="img/favicon.png" />
 <link rel="stylesheet" type="text/css" href="style.css">
 <title>piTemp</title>
@@ -10,8 +11,19 @@
 <script src="../libraries/RGraph.thermometer.js" ></script>
 <script type="text/javascript">													// Schalter initiieren 
 var moehre = 0;		
-var timevar = 200;
-thermometer = {};
+var timevar = 1000;
+var thermometer = {};
+var schalter = 0;
+focusvar = 1;
+
+window.onblur= function() {
+focusvar=0;
+}
+
+window.onfocus= function() {
+focusvar=1;
+ausgeben ();
+}
 
 function initGraph (json) {
 thermometer[0] = new RGraph.Thermometer({id: 'g0', min: 0, max: 100, value: 0}).draw();
@@ -34,6 +46,7 @@ $.ajax({
 	async: true,	
 	dataType: "json",
 	success: function(data){	// nur ausführen wenn getJson (hier ajax) erfolgreich war
+	console.log("get ./tnow.json");
 	celsius = data.temperature_record;
 	ausgeben();
 	},
@@ -42,19 +55,39 @@ $.ajax({
 }	
 
 function ausgeben () {
-if (moehre == 8) {
-	moehre = 0;
-	//RGraph.reset(thermometer[moehre]);
-	getData();
+$('#t0').css("background-color","white");
+$('#t1').css("background-color","white");
+$('#t2').css("background-color","white");
+$('#t3').css("background-color","white");
+$('#t4').css("background-color","white");
+$('#t5').css("background-color","white");
+$('#t6').css("background-color","white");
+$('#t7').css("background-color","white");
+
+if (schalter == "on" && focusvar ==1) {
+	if (moehre == 8) {
+		moehre = 0;
+		getData();
+		}
+	else {
+		$('#t'+moehre).css("background-color","#66FF33");
+		thermometer[moehre].value = celsius[moehre];
+		$('#t'+moehre).text(celsius[moehre]+"°C");
+		thermometer[moehre].grow();
+		moehre++;
+		setTimeout(ausgeben, timevar);
 	}
-else {
-	console.log(moehre);
-	thermometer[moehre].value = celsius[moehre]; 
-	thermometer[moehre].grow();
-	moehre++;
-	setTimeout(ausgeben, timevar);
 }
+else if (schalter == "off") {
+	moehre = 0;
+	}
+}
+	
+function choose(choice){
+schalter = choice;
+ausgeben();
 }	
+	
 </script>
 </head>
 <body>
@@ -69,24 +102,42 @@ else {
 	</nav>
   <aside>
 	<div id="buttons">
+		<b>Status:</b>
+		<br>
+		<button onClick="choose('on')">On</button>
+		<button onClick="choose('off')">Off</button>
+		<br><br>
+		<b>Timing:</b>
+		<br>
+		<input type="range" min="200" max="1000" value="600" step="100" onchange="timevar = this.value" 
 	</div>	
 </aside>
 <section id="content">
-	<article>	
-		<div id="log">	
-		<canvas id="g0" width="80" height="300">[No canvas support]</canvas>
-		<canvas id="g1" width="80" height="300">[No canvas support]</canvas> 
-		<canvas id="g2" width="80" height="300">[No canvas support]</canvas> 
-		<canvas id="g3" width="80" height="300">[No canvas support]</canvas> 
-		<canvas id="g4" width="80" height="300">[No canvas support]</canvas> 
-		<canvas id="g5" width="80" height="300">[No canvas support]</canvas> 
-		<canvas id="g6" width="80" height="300">[No canvas support]</canvas> 
-		<canvas id="g7" width="80" height="300">[No canvas support]</canvas> 
-	</article>
+			<table class="tg">
+			  <tr>
+				<th class="c0"><canvas id="g0" width="80" height="300">[No canvas support]</canvas></th>
+				<th class="c1"><canvas id="g1" width="80" height="300">[No canvas support]</canvas></th>
+				<th class="c2"><canvas id="g2" width="80" height="300">[No canvas support]</canvas></th>
+				<th class="c3"><canvas id="g3" width="80" height="300">[No canvas support]</canvas></th>
+				<th class="c4"><canvas id="g4" width="80" height="300">[No canvas support]</canvas></th>
+				<th class="c5"><canvas id="g5" width="80" height="300">[No canvas support]</canvas></th>
+				<th class="c6"><canvas id="g6" width="80" height="300">[No canvas support]</canvas></th>
+				<th class="c7"><canvas id="g7" width="80" height="300">[No canvas support]</canvas></th>
+			  </tr>
+			  <tr>
+				<td class="temps" id="t0">off</td>
+				<td class="temps" id="t1">off</td>
+				<td class="temps" id="t2">off</td>
+				<td class="temps" id="t3">off</td>
+				<td class="temps" id="t4">off</td>
+				<td class="temps" id="t5">off</td>
+				<td class="temps" id="t6">off</td>
+				<td class="temps" id="t7">off</td>
+			  </tr>
+			</table>
   </section>
 <footer>		
 </footer>
-</div>
 <script>initGraph(); getData();</script>
 	</body>
 </html>

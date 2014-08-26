@@ -11,7 +11,6 @@ var temparray = {};
 var array = fs.readFileSync('devices.txt').toString().split("\n");
 var tempid = ["t1","t2","t3","t4","t5","t6","t7","t8"];
 data2 = {temperature_record:[0,0,0,0,0,0,0,0]};
-console.log(data2);
 
 // Datei einlesen für Device config
 function readDatei(txtfile, callback){
@@ -69,7 +68,6 @@ readTemp(tempid[moehre], function(temp){
 	temparray[tempid] = temp;
 	var key = temparray[tempid]
 	data2.temperature_record[moehre]=key;
-	//console.log("Speicher:", data2.temperature_record[moehre]);
 	}
 );	
 }
@@ -93,8 +91,8 @@ var server = http.createServer(
       if (request.url == '/tnow.json'){
 			response.writeHead(200, { "Content-type": "application/json" });		
 			response.end(JSON.stringify(data2), "ascii");
-			i ++;
-			console.log('Senden:', i, data2.temperature_record[0]);
+			//i ++;
+			//console.log('Senden:', i, data2.temperature_record[0]);
       return;
       }
 

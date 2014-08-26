@@ -37,7 +37,12 @@ margin: 0 0 20px;
 img.download {vertical-align:middle;}
 img{border:none; }
 
-	
+.tg  {border-collapse:collapse;border-spacing:0;margin:auto;}
+.tg th{padding:10px 15px; overflow:hidden;word-break:normal;}
+.tg td{padding:10px 15px; overflow:hidden;word-break:normal;}
+
+
+td.temps {text-align: center; font-size: 1.2em;}
 /* ----------container zentriert das layout-------------- */
 
 #container {
@@ -105,8 +110,6 @@ p, pre{
 padding:  0 0 20px;
 line-height:1.5em;
 }
-
-
 /* -------------- side infos ------------- */
 
 aside {
