@@ -9,7 +9,7 @@ var child;
 var moehre = 0;
 var temparray = {};
 var array = fs.readFileSync('devices.txt').toString().split("\n");
-var tempid = ["t1","t2","t3","t4","t5","t6","t7","t8"];
+var tempid = ["t1","t2","t3","t4","t5","t6","t7","t8","t9","t10","t11","t12","t13","t14","t15","t16"];
 data2 = {temperature_record:[0,0,0,0,0,0,0,0]};
 
 // Datei einlesen für Device config
@@ -56,7 +56,7 @@ child = exec(device, function (error, stdout, stderr) {
 	temp[tempid] = stdout;
 	temp[tempid] = Math.round(temp[tempid] * 10) / 10;
 	callback(temp[tempid]);
-	if (moehre <= 6) {moehre++}
+	if (moehre <= 14) {moehre++}
 	else {moehre = 0};
 	loopi();
 	});

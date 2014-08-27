@@ -59,7 +59,7 @@ $.ajax({
 function ausgeben () {
 if (schalter == "on" && focusvar ==1) {			// abhaengig ob fenster im focus ist und "on"
 	$('#status').text("on");
-	if (moehre == 8) {							// wenn 8 mal daten ausgegeben worden sind -> neue daten aus getData() holen
+	if (moehre == 16) {							// wenn 8 mal daten ausgegeben worden sind -> neue daten aus getData() holen
 		moehre = 0;
 		getData();
 		}
