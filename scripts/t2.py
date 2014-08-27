@@ -1,3 +1,2 @@
-import time
 import random
-print random.random() * 100
+print random.random() * 40

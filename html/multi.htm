@@ -26,14 +26,14 @@ ausgeben ();
 }
 
 function initGraph (json) {
-thermometer[0] = new RGraph.VProgress({id: 'g0', min: 0, max: 120, value: 0, options: {gutter: {right: 2, left:  30}, labels: {position: "left" , count: 5}, colors:['#7798BF']}}).draw();
-thermometer[1] = new RGraph.VProgress({id: 'g1', min: 0, max: 40,  value: 0, options: {gutter: {left:  2, right: 30}, labels: {position: "right", count: 5}, colors:['#7798BF']}}).draw();
-thermometer[2] = new RGraph.VProgress({id: 'g2', min: 0, max: 120, value: 0, options: {gutter: {right: 2, left:  30}, labels: {position: "left" , count: 5}, colors:['#7798BF']}}).draw();
-thermometer[3] = new RGraph.VProgress({id: 'g3', min: 0, max: 40,  value: 0, options: {gutter: {left:  2, right: 30}, labels: {position: "right", count: 5}, colors:['#7798BF']}}).draw();
-thermometer[4] = new RGraph.VProgress({id: 'g4', min: 0, max: 120, value: 0, options: {gutter: {right: 2, left:  30}, labels: {position: "left" , count: 5}, colors:['#7798BF']}}).draw();
-thermometer[5] = new RGraph.VProgress({id: 'g5', min: 0, max: 40,  value: 0, options: {gutter: {left:  2, right: 30}, labels: {position: "right", count: 5}, colors:['#7798BF']}}).draw();
-thermometer[6] = new RGraph.VProgress({id: 'g6', min: 0, max: 120, value: 0, options: {gutter: {right: 2, left:  30}, labels: {position: "left" , count: 5}, colors:['#7798BF']}}).draw();
-thermometer[7] = new RGraph.VProgress({id: 'g7', min: 0, max: 40,  value: 0, options: {gutter: {left:  2, right: 30}, labels: {position: "right", count: 5}, colors:['#7798BF']}}).draw();
+thermometer[0] = new RGraph.VProgress({id: 'g0', min: 0, max: 120, value: 0, options: {gutter: {right: 2, left:  30, bottom: 10}, labels: {position: "left" , count: 5}, colors:['#33CC33']}}).draw();
+thermometer[1] = new RGraph.VProgress({id: 'g1', min: 0, max: 40,  value: 0, options: {gutter: {left:  2, right: 30, bottom: 10}, labels: {position: "right", count: 5}, colors:['#7798BF']}}).draw();
+thermometer[2] = new RGraph.VProgress({id: 'g2', min: 0, max: 120, value: 0, options: {gutter: {right: 2, left:  30, bottom: 10}, labels: {position: "left" , count: 5}, colors:['#33CC33']}}).draw();
+thermometer[3] = new RGraph.VProgress({id: 'g3', min: 0, max: 40,  value: 0, options: {gutter: {left:  2, right: 30, bottom: 10}, labels: {position: "right", count: 5}, colors:['#7798BF']}}).draw();
+thermometer[4] = new RGraph.VProgress({id: 'g4', min: 0, max: 120, value: 0, options: {gutter: {right: 2, left:  30, bottom: 10}, labels: {position: "left" , count: 5}, colors:['#33CC33']}}).draw();
+thermometer[5] = new RGraph.VProgress({id: 'g5', min: 0, max: 40,  value: 0, options: {gutter: {left:  2, right: 30, bottom: 10}, labels: {position: "right", count: 5}, colors:['#7798BF']}}).draw();
+thermometer[6] = new RGraph.VProgress({id: 'g6', min: 0, max: 120, value: 0, options: {gutter: {right: 2, left:  30, bottom: 10}, labels: {position: "left" , count: 5}, colors:['#33CC33']}}).draw();
+thermometer[7] = new RGraph.VProgress({id: 'g7', min: 0, max: 40,  value: 0, options: {gutter: {left:  2, right: 30, bottom: 10}, labels: {position: "right", count: 5}, colors:['#7798BF']}}).draw();
 }
 
 function getData(){	
@@ -55,17 +55,14 @@ $.ajax({
 }	
 
 function ausgeben () {
-$('#t0').css("background-color","white");
-
 if (schalter == "on" && focusvar ==1) {
 	if (moehre == 8) {
 		moehre = 0;
 		getData();
 		}
 	else {
-		$('#t'+moehre).css("background-color","#66FF33");
 		thermometer[moehre].value = celsius[moehre];
-		$('#t'+moehre).text(celsius[moehre]+"°C");
+		$('#data'+moehre).text(celsius[moehre]);
 		thermometer[moehre].grow();
 		moehre++;
 		setTimeout(ausgeben, timevar);
@@ -104,20 +101,13 @@ ausgeben();
 		<input type="range" min="0" max="1000" value="500" step="100" onchange="timevar = this.value" 
 	</div>	
 </aside>
-<section id="content">
-				
+<section id="content">			
 			<table class="tg">
 			  <tr>
-				<th class="c0"><canvas id="g0" width="80" height="200">[No canvas support]</canvas><canvas id="g1" width="80" height="200">[No canvas support]</th>
-				<th class="c1"><canvas id="g2" width="80" height="200">[No canvas support]</canvas><canvas id="g3" width="80" height="200">[No canvas support]</th>
-				<th class="c2"><canvas id="g4" width="80" height="200">[No canvas support]</canvas><canvas id="g5" width="80" height="200">[No canvas support]</th>
-				<th class="c3"><canvas id="g6" width="80" height="200">[No canvas support]</canvas><canvas id="g7" width="80" height="200">[No canvas support]</th>
-			  </tr>
-			  <tr>
-				<td class="temps" id="t0">off</td>
-				<td class="temps" id="t3">off</td>
-				<td class="temps" id="t4">off</td>
-				<td class="temps" id="t7">off</td>
+				<th class="c0"><canvas id="g0" width="80" height="200">[No canvas support]</canvas><canvas id="g1" width="80" height="200">[No canvas support]</canvas> <br> <span id="data0">0</span> °C <br> <span id="data1">0</span> l/min</th>
+				<th class="c1"><canvas id="g2" width="80" height="200">[No canvas support]</canvas><canvas id="g3" width="80" height="200">[No canvas support]</canvas> <br> <span id="data2">0</span> °C <br> <span id="data3">0</span> l/min</th>
+				<th class="c2"><canvas id="g4" width="80" height="200">[No canvas support]</canvas><canvas id="g5" width="80" height="200">[No canvas support]</canvas> <br> <span id="data4">0</span> °C <br> <span id="data5">0</span> l/min</th>
+				<th class="c3"><canvas id="g6" width="80" height="200">[No canvas support]</canvas><canvas id="g7" width="80" height="200">[No canvas support]</canvas> <br> <span id="data6">0</span> °C <br> <span id="data7">0</span> l/min</th>
 			  </tr>
 			</table>
   </section>
