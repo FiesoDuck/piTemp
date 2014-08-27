@@ -9,76 +9,7 @@
 <script src="../libraries/RGraph.common.core.js" ></script>
 <script src="../libraries/RGraph.common.effects.js" ></script>
 <script src="../libraries/RGraph.vprogress.js" ></script>
-<script type="text/javascript">													// Schalter initiieren 
-var moehre = 0;		
-var timevar = 1000;
-var thermometer = {};
-var schalter = 0;
-focusvar = 1;
-
-window.onblur= function() {
-focusvar=0;
-}
-
-window.onfocus= function() {
-focusvar=1;
-ausgeben ();
-}
-
-function initGraph (json) {
-thermometer[0] = new RGraph.VProgress({id: 'g0', min: 0, max: 120, value: 0, options: {gutter: {right: 2, left:  30, bottom: 10}, labels: {position: "left" , count: 5}, colors:['#33CC33']}}).draw();
-thermometer[1] = new RGraph.VProgress({id: 'g1', min: 0, max: 40,  value: 0, options: {gutter: {left:  2, right: 30, bottom: 10}, labels: {position: "right", count: 5}, colors:['#7798BF']}}).draw();
-thermometer[2] = new RGraph.VProgress({id: 'g2', min: 0, max: 120, value: 0, options: {gutter: {right: 2, left:  30, bottom: 10}, labels: {position: "left" , count: 5}, colors:['#33CC33']}}).draw();
-thermometer[3] = new RGraph.VProgress({id: 'g3', min: 0, max: 40,  value: 0, options: {gutter: {left:  2, right: 30, bottom: 10}, labels: {position: "right", count: 5}, colors:['#7798BF']}}).draw();
-thermometer[4] = new RGraph.VProgress({id: 'g4', min: 0, max: 120, value: 0, options: {gutter: {right: 2, left:  30, bottom: 10}, labels: {position: "left" , count: 5}, colors:['#33CC33']}}).draw();
-thermometer[5] = new RGraph.VProgress({id: 'g5', min: 0, max: 40,  value: 0, options: {gutter: {left:  2, right: 30, bottom: 10}, labels: {position: "right", count: 5}, colors:['#7798BF']}}).draw();
-thermometer[6] = new RGraph.VProgress({id: 'g6', min: 0, max: 120, value: 0, options: {gutter: {right: 2, left:  30, bottom: 10}, labels: {position: "left" , count: 5}, colors:['#33CC33']}}).draw();
-thermometer[7] = new RGraph.VProgress({id: 'g7', min: 0, max: 40,  value: 0, options: {gutter: {left:  2, right: 30, bottom: 10}, labels: {position: "right", count: 5}, colors:['#7798BF']}}).draw();
-}
-
-function getData(){	
-var data;
-var jsonurl = './tnow.json';
-$.ajax({
-	type: "GET",
-	url: jsonurl,	// Daten-Stream url
-	data: data,	// Variable für json Container
-	async: true,	
-	dataType: "json",
-	success: function(data){	// nur ausführen wenn getJson (hier ajax) erfolgreich war
-	console.log("get ./tnow.json");
-	celsius = data.temperature_record;
-	ausgeben();
-	},
-	error: function(){alert('Der Server antwortet nicht!');}
-	});	
-}	
-
-function ausgeben () {
-if (schalter == "on" && focusvar ==1) {
-	if (moehre == 8) {
-		moehre = 0;
-		getData();
-		}
-	else {
-		thermometer[moehre].value = celsius[moehre];
-		$('#data'+moehre).text(celsius[moehre]);
-		thermometer[moehre].grow();
-		moehre++;
-		setTimeout(ausgeben, timevar);
-	}
-}
-else if (schalter == "off") {
-	moehre = 0;
-	}
-}
-	
-function choose(choice){
-schalter = choice;
-ausgeben();
-}	
-	
-</script>
+<script src="../libraries/piTemp.js" ></script>
 </head>
 <body>
 <div id="container">
