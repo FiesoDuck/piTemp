@@ -123,6 +123,12 @@ var server = http.createServer(
 			if(err) {console.log(err);} else {console.log("The file was saved!");}
 			}); 
 		}
+	
+	// damit bei aufruf der seite direkt die richtigen werte ausgegeben werden, fülle
+	// ich das "ausgabe array" mit daten aus der datein devices.txt
+      if (pathfile== '/multi.htm'){
+			readDatei("devices.txt", function(data){console.log("passiert");});
+		}
 		
 	// Handler for favicon.ico requests
 	if (pathfile == '/img/favicon.ico'){
