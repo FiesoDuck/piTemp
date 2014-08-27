@@ -121,11 +121,19 @@ var server = http.createServer(
 			}); 
 		}
 		
+	// Handler for favicon.ico requests
+	if (pathfile == '/img/favicon.ico'){
+		response.writeHead(200, {'Content-Type': 'image/x-icon'});
+		response.end();
+		//Optionally log favicon requests.
+		console.log('favicon requested');
+		return;
+	}		
 
 
 		else {
 			// Print requested file to terminal
-			console.log('Request from '+ request.connection.remoteAddress +' for: ' + pathfile);
+			//console.log('Request from '+ request.connection.remoteAddress +' for: ' + pathfile);
 			i = 0;
 			// Serve file using node-static			
 			staticServer.serve(request, response, function (err, result) {
