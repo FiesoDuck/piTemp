@@ -9,7 +9,7 @@ var child;
 var moehre = 0;
 var temparray = {};
 var array = fs.readFileSync('devices.txt').toString().split("\n");
-var tempid = ["t1","t2","t3","t4","t5","t6","t7","t8","t9","t10","t11","t12","t13","t14","t15","t16"];
+tempid = ["t1","t2","t3","t4","t5","t6","t7","t8","t9","t10","t11","t12","t13","t14","t15","t16"];
 data2 = {temperature_record:[0,0,0,0,0,0,0,0]};
 
 // Datei einlesen für Device config
@@ -24,7 +24,8 @@ function readDatei(txtfile, callback){
 
       // Read data from file (using fast node ASCII encoding).
      var data = buffer.toString('ascii').split("\n"); // Split by space
-	 
+	 tempid = data;
+	 console.log(tempid);
       // Device Daten in data verpacken
    	var data = {
             devices:[{
@@ -40,7 +41,11 @@ function devices(daten){
 datenr = daten.dev0+"\n"+daten.dev1+"\n"+
 		 daten.dev2+"\n"+daten.dev3+"\n"+
 		 daten.dev4+"\n"+daten.dev5+"\n"+
-		 daten.dev6+"\n"+daten.dev7;
+		 daten.dev6+"\n"+daten.dev7+"\n"+
+		 daten.dev8+"\n"+daten.dev9+"\n"+
+		 daten.dev10+"\n"+daten.dev11+"\n"+
+		 daten.dev12+"\n"+daten.dev13+"\n"+
+		 daten.dev14+"\n"+daten.dev15;
 console.log("Get ausgeführt");
 return datenr;
 }
