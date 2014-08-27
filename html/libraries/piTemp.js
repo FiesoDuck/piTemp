@@ -64,7 +64,13 @@ function choose(choice){
 schalter = choice;
 ausgeben();
 }
+function scale() {
+RGraph.Reset(g0);
+var mint=document.getElementById('mint').value; 
+var maxt=document.getElementById('maxt').value;
+graph[0]  = new RGraph.VProgress({id: 'g0',  min: Number(mint), max: Number(maxt), value: 0, options: {gutter: {right: 2, left:  30, bottom: 10}, labels: {position: "left" , count: 5}, colors:['#33CC33']}}).draw();
 
+}
 // graphen beim Seitenaufbau einmalig zeichnen
 // ID von Canvas, min, max, value 0 -> startwert, gutter abstand von graph zu canvas (?), labels seite und wieviele, farbe -> draw!
 function initGraph (json) {

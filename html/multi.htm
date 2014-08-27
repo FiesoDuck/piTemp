@@ -25,14 +25,22 @@
 		<br>
 		<span id="status">off</span>
 		<br><br>
-		<b>Control</b>
+		<b>Control:</b>
 		<br>
 		<button onClick="choose('on')">On</button>
 		<button onClick="choose('off')">Off</button>
 		<br><br>
-		<b>Timing:</b>
+		Timing:
 		<br>
 		<input type="range" min="0" max="1000" value="500" step="100" onchange="timevar = this.value">
+		<br>
+		Min :
+		<input type="text" size="3" maxlength="3" id="mint"/>
+		<br>
+		Max:
+		<input type="text" size="3" maxlength="3" id="maxt"/>
+		<br>
+		<button onClick="scale()">Scale</button>
 	</div>	
 </aside>
 <section id="content">			
