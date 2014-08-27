@@ -41,9 +41,8 @@ img{border:none; }
 .tg th{padding:0px 15px; overflow:hidden;word-break:normal;}
 .tg td{padding:0px 15px; overflow:hidden;word-break:normal;}
 
-
-
 td.data {text-align: center; font-size: 1.2em;}
+th.th0 {background-color: #eee;}
 /* ----------container zentriert das layout-------------- */
 
 #container {

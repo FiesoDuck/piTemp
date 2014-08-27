@@ -20,30 +20,39 @@
 			<li><a href="check.htm">config</a></li>
 		</ul>
 	</nav>
-  <aside>
+<aside>
 	<div id="buttons">
 		<b>Status:</b>
+		<br>
+		<span id="status">off</span>
+		<br><br>
+		<b>Control</b>
 		<br>
 		<button onClick="choose('on')">On</button>
 		<button onClick="choose('off')">Off</button>
 		<br><br>
 		<b>Timing:</b>
 		<br>
-		<input type="range" min="0" max="1000" value="500" step="100" onchange="timevar = this.value" 
+		<input type="range" min="0" max="1000" value="500" step="100" onchange="timevar = this.value">
 	</div>	
 </aside>
 <section id="content">			
-			<table class="tg">
+			<table class="tg" border="1" bgcolor="#FFFF00">
 			  <tr>
-				<th class="c0"><canvas id="g0" width="80" height="200">[No canvas support]</canvas><canvas id="g1" width="80" height="200">[No canvas support]</canvas> <br> <span id="data0">0</span> °C <br> <span id="data1">0</span> l/min</th>
-				<th class="c1"><canvas id="g2" width="80" height="200">[No canvas support]</canvas><canvas id="g3" width="80" height="200">[No canvas support]</canvas> <br> <span id="data2">0</span> °C <br> <span id="data3">0</span> l/min</th>
-				<th class="c2"><canvas id="g4" width="80" height="200">[No canvas support]</canvas><canvas id="g5" width="80" height="200">[No canvas support]</canvas> <br> <span id="data4">0</span> °C <br> <span id="data5">0</span> l/min</th>
-				<th class="c3"><canvas id="g6" width="80" height="200">[No canvas support]</canvas><canvas id="g7" width="80" height="200">[No canvas support]</canvas> <br> <span id="data6">0</span> °C <br> <span id="data7">0</span> l/min</th>
+				<th class="th0"><canvas id="g0"  width="80" height="200">[No canvas support]</canvas><canvas id="g1" width="80"  height="200">[No canvas support]</canvas> <br> <span id="data0" >0</span> °C <br> <span id="data1" >0</span> l/min</th>
+				<th class="th0"><canvas id="g2"  width="80" height="200">[No canvas support]</canvas><canvas id="g3" width="80"  height="200">[No canvas support]</canvas> <br> <span id="data2" >0</span> °C <br> <span id="data3" >0</span> l/min</th>
+				<th class="th0"><canvas id="g4"  width="80" height="200">[No canvas support]</canvas><canvas id="g5" width="80"  height="200">[No canvas support]</canvas> <br> <span id="data4" >0</span> °C <br> <span id="data5" >0</span> l/min</th>
+				<th class="th0"><canvas id="g6"  width="80" height="200">[No canvas support]</canvas><canvas id="g7" width="80"  height="200">[No canvas support]</canvas> <br> <span id="data6" >0</span> °C <br> <span id="data7" >0</span> l/min</th>
+			  </tr>
+			  <tr>
+				<th class="th0"><canvas id="g8"  width="80" height="200">[No canvas support]</canvas><canvas id="g9" width="80"  height="200">[No canvas support]</canvas> <br> <span id="data8" >0</span> °C <br> <span id="data9" >0</span> l/min</th>
+				<th class="th0"><canvas id="g10" width="80" height="200">[No canvas support]</canvas><canvas id="g11" width="80" height="200">[No canvas support]</canvas> <br> <span id="data10">0</span> °C <br> <span id="data11">0</span> l/min</th>
+				<th class="th0"><canvas id="g12" width="80" height="200">[No canvas support]</canvas><canvas id="g13" width="80" height="200">[No canvas support]</canvas> <br> <span id="data12">0</span> °C <br> <span id="data13">0</span> l/min</th>
+				<th class="th0"><canvas id="g14" width="80" height="200">[No canvas support]</canvas><canvas id="g15" width="80" height="200">[No canvas support]</canvas> <br> <span id="data14">0</span> °C <br> <span id="data15">0</span> l/min</th>
 			  </tr>
 			</table>
-  </section>
-<footer>		
-</footer>
+</section>
+<footer></footer>
 <script>initGraph(); getData();</script>
-	</body>
+</body>
 </html>
