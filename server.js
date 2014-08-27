@@ -22,11 +22,9 @@ function readDatei(txtfile, callback){
          process.exit(1);
       }
 
-      // Read data from file (using fast node ASCII encoding).
-     var data = buffer.toString('ascii').split("\n"); // Split by space
-	 tempid = data;
-	 console.log(tempid);
-      // Device Daten in data verpacken
+    // Read data from file (using fast node ASCII encoding).
+    var data = buffer.toString('ascii').split("\n"); 					// trennen nach zeilenumbruch
+	tempid = data;														//reihenfolge der scripte wird hier umgestellt
    	var data = {
             devices:[{
             list: data

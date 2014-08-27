@@ -15,27 +15,6 @@ focusvar=1;
 ausgeben ();
 }
 
-// graphen beim Seitenaufbau einmalig zeichnen
-// ID von Canvas, min, max, value 0 -> startwert, gutter abstand von graph zu canvas (?), labels seite und wieviele, farbe -> draw!
-function initGraph (json) {
-graph[0]  = new RGraph.VProgress({id: 'g0',  min: 0, max: 120, value: 0, options: {gutter: {right: 2, left:  30, bottom: 10}, labels: {position: "left" , count: 5}, colors:['#33CC33']}}).draw();
-graph[1]  = new RGraph.VProgress({id: 'g1',  min: 0, max: 40,  value: 0, options: {gutter: {left:  2, right: 30, bottom: 10}, labels: {position: "right", count: 5}, colors:['#7798BF']}}).draw();
-graph[2]  = new RGraph.VProgress({id: 'g2',  min: 0, max: 120, value: 0, options: {gutter: {right: 2, left:  30, bottom: 10}, labels: {position: "left" , count: 5}, colors:['#33CC33']}}).draw();
-graph[3]  = new RGraph.VProgress({id: 'g3',  min: 0, max: 40,  value: 0, options: {gutter: {left:  2, right: 30, bottom: 10}, labels: {position: "right", count: 5}, colors:['#7798BF']}}).draw();
-graph[4]  = new RGraph.VProgress({id: 'g4',  min: 0, max: 120, value: 0, options: {gutter: {right: 2, left:  30, bottom: 10}, labels: {position: "left" , count: 5}, colors:['#33CC33']}}).draw();
-graph[5]  = new RGraph.VProgress({id: 'g5',  min: 0, max: 40,  value: 0, options: {gutter: {left:  2, right: 30, bottom: 10}, labels: {position: "right", count: 5}, colors:['#7798BF']}}).draw();
-graph[6]  = new RGraph.VProgress({id: 'g6',  min: 0, max: 120, value: 0, options: {gutter: {right: 2, left:  30, bottom: 10}, labels: {position: "left" , count: 5}, colors:['#33CC33']}}).draw();
-graph[7]  = new RGraph.VProgress({id: 'g7',  min: 0, max: 40,  value: 0, options: {gutter: {left:  2, right: 30, bottom: 10}, labels: {position: "right", count: 5}, colors:['#7798BF']}}).draw();
-graph[8]  = new RGraph.VProgress({id: 'g8',  min: 0, max: 120, value: 0, options: {gutter: {right: 2, left:  30, bottom: 10}, labels: {position: "left" , count: 5}, colors:['#33CC33']}}).draw();
-graph[9]  = new RGraph.VProgress({id: 'g9',  min: 0, max: 40,  value: 0, options: {gutter: {left:  2, right: 30, bottom: 10}, labels: {position: "right", count: 5}, colors:['#7798BF']}}).draw();
-graph[10] = new RGraph.VProgress({id: 'g10', min: 0, max: 120, value: 0, options: {gutter: {right: 2, left:  30, bottom: 10}, labels: {position: "left" , count: 5}, colors:['#33CC33']}}).draw();
-graph[11] = new RGraph.VProgress({id: 'g11', min: 0, max: 40,  value: 0, options: {gutter: {left:  2, right: 30, bottom: 10}, labels: {position: "right", count: 5}, colors:['#7798BF']}}).draw();
-graph[12] = new RGraph.VProgress({id: 'g12', min: 0, max: 120, value: 0, options: {gutter: {right: 2, left:  30, bottom: 10}, labels: {position: "left" , count: 5}, colors:['#33CC33']}}).draw();
-graph[13] = new RGraph.VProgress({id: 'g13', min: 0, max: 40,  value: 0, options: {gutter: {left:  2, right: 30, bottom: 10}, labels: {position: "right", count: 5}, colors:['#7798BF']}}).draw();
-graph[14] = new RGraph.VProgress({id: 'g14', min: 0, max: 120, value: 0, options: {gutter: {right: 2, left:  30, bottom: 10}, labels: {position: "left" , count: 5}, colors:['#33CC33']}}).draw();
-graph[15] = new RGraph.VProgress({id: 'g15', min: 0, max: 40,  value: 0, options: {gutter: {left:  2, right: 30, bottom: 10}, labels: {position: "right", count: 5}, colors:['#7798BF']}}).draw();
-}
-
 // daten von server besorgen
 function getData(){	
 var data;
@@ -51,7 +30,7 @@ $.ajax({
 	celsius = data.temperature_record;
 	ausgeben();						   
 	},
-	error: function(){alert('Der Server antwortet nicht!');}
+	error: function(){alert('Der Server antwortet nicht!'); schalter = "error";}
 	});	
 }	
 
@@ -75,10 +54,34 @@ else if (schalter == "off") {						// ausgabe stoppen
 	$('#status').text("off");
 	moehre = 0;
 	}
+else if (schalter == "error") {
+	$('#status').text("ERROR");
+	moehre = 0;	
 }
-
+}
 // user eingabe nutzen um ausgabe zu steuern
 function choose(choice){							
 schalter = choice;
 ausgeben();
+}
+
+// graphen beim Seitenaufbau einmalig zeichnen
+// ID von Canvas, min, max, value 0 -> startwert, gutter abstand von graph zu canvas (?), labels seite und wieviele, farbe -> draw!
+function initGraph (json) {
+graph[0]  = new RGraph.VProgress({id: 'g0',  min: 0, max: 120, value: 0, options: {gutter: {right: 2, left:  30, bottom: 10}, labels: {position: "left" , count: 5}, colors:['#33CC33']}}).draw();
+graph[1]  = new RGraph.VProgress({id: 'g1',  min: 0, max: 40,  value: 0, options: {gutter: {left:  2, right: 30, bottom: 10}, labels: {position: "right", count: 5}, colors:['#7798BF']}}).draw();
+graph[2]  = new RGraph.VProgress({id: 'g2',  min: 0, max: 120, value: 0, options: {gutter: {right: 2, left:  30, bottom: 10}, labels: {position: "left" , count: 5}, colors:['#33CC33']}}).draw();
+graph[3]  = new RGraph.VProgress({id: 'g3',  min: 0, max: 40,  value: 0, options: {gutter: {left:  2, right: 30, bottom: 10}, labels: {position: "right", count: 5}, colors:['#7798BF']}}).draw();
+graph[4]  = new RGraph.VProgress({id: 'g4',  min: 0, max: 120, value: 0, options: {gutter: {right: 2, left:  30, bottom: 10}, labels: {position: "left" , count: 5}, colors:['#33CC33']}}).draw();
+graph[5]  = new RGraph.VProgress({id: 'g5',  min: 0, max: 40,  value: 0, options: {gutter: {left:  2, right: 30, bottom: 10}, labels: {position: "right", count: 5}, colors:['#7798BF']}}).draw();
+graph[6]  = new RGraph.VProgress({id: 'g6',  min: 0, max: 120, value: 0, options: {gutter: {right: 2, left:  30, bottom: 10}, labels: {position: "left" , count: 5}, colors:['#33CC33']}}).draw();
+graph[7]  = new RGraph.VProgress({id: 'g7',  min: 0, max: 40,  value: 0, options: {gutter: {left:  2, right: 30, bottom: 10}, labels: {position: "right", count: 5}, colors:['#7798BF']}}).draw();
+graph[8]  = new RGraph.VProgress({id: 'g8',  min: 0, max: 120, value: 0, options: {gutter: {right: 2, left:  30, bottom: 10}, labels: {position: "left" , count: 5}, colors:['#33CC33']}}).draw();
+graph[9]  = new RGraph.VProgress({id: 'g9',  min: 0, max: 40,  value: 0, options: {gutter: {left:  2, right: 30, bottom: 10}, labels: {position: "right", count: 5}, colors:['#7798BF']}}).draw();
+graph[10] = new RGraph.VProgress({id: 'g10', min: 0, max: 120, value: 0, options: {gutter: {right: 2, left:  30, bottom: 10}, labels: {position: "left" , count: 5}, colors:['#33CC33']}}).draw();
+graph[11] = new RGraph.VProgress({id: 'g11', min: 0, max: 40,  value: 0, options: {gutter: {left:  2, right: 30, bottom: 10}, labels: {position: "right", count: 5}, colors:['#7798BF']}}).draw();
+graph[12] = new RGraph.VProgress({id: 'g12', min: 0, max: 120, value: 0, options: {gutter: {right: 2, left:  30, bottom: 10}, labels: {position: "left" , count: 5}, colors:['#33CC33']}}).draw();
+graph[13] = new RGraph.VProgress({id: 'g13', min: 0, max: 40,  value: 0, options: {gutter: {left:  2, right: 30, bottom: 10}, labels: {position: "right", count: 5}, colors:['#7798BF']}}).draw();
+graph[14] = new RGraph.VProgress({id: 'g14', min: 0, max: 120, value: 0, options: {gutter: {right: 2, left:  30, bottom: 10}, labels: {position: "left" , count: 5}, colors:['#33CC33']}}).draw();
+graph[15] = new RGraph.VProgress({id: 'g15', min: 0, max: 40,  value: 0, options: {gutter: {left:  2, right: 30, bottom: 10}, labels: {position: "right", count: 5}, colors:['#7798BF']}}).draw();
 }
