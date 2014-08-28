@@ -63,7 +63,8 @@ function choose(choice) {
 	<nav>
 		<ul>
 			<li><a href="multi.htm">read temperature</a></li>
-			<li><a href="check.htm">config</a></li>
+			<li><a href="config1.htm">config</a></li>
+			<li><a href="config2.htm">config 2</a></li>
 		</ul>
 	</nav>
 	<aside>
@@ -74,12 +75,10 @@ function choose(choice) {
 				<button onClick="choose('send')">send</button>
 				<button onClick="choose('load')">load</button>
 				<button onClick="choose('clear')">clear</button>
-				<br>
-				<button onClick="choose('discover')">discover</button>
 				<br><br>
 				<b>note:</b>
 				<br>
-				ls -m -1 /sys/bus/w1/devices > devices.txt
+				ls -m -1 /sys/bus/w1/devices
 			</div>	
 	</aside>
 	<section id="content">

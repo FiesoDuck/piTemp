@@ -99,7 +99,7 @@ var server = http.createServer(
       return;
       }
 
-      if (pathfile== '/check.json'){
+      if (pathfile== '/config1.json'){
             readDatei("devices.txt",function(data){
 			      response.writeHead(200, { "Content-type": "application/json" });		
 			      response.end(JSON.stringify(data), "ascii");
