@@ -11,14 +11,14 @@ schalter = 'leer';
 devices = 0;
 
 // Daten aus json lesen, abhängig von User Eingabe
-function getData(deviceurl){	
+function getData(deviceurl){
 	var data;
 	var input = document.createElement('input');
 
 	input.type = "text"; 
 		$.ajax({
 			type: "GET",
-			url: 'check.json',													// Daten-Stream url
+			url: 'config1.json',													// Daten-Stream url
 			data: data,															// Variable für json Container
 			async: true,										
 			dataType: "json",
