@@ -4,6 +4,8 @@ var sys = require('sys');
 var http = require('http');
 var exec = require('child_process').exec;
 var nodestatic = require('node-static');
+var sqlite3 = require('sqlite3').verbose();
+var db = new sqlite3.Database('./data.db');
 var staticServer = new nodestatic.Server("html"); // Setup static server for "html" directory
 var child;
 var moehre = 0;
@@ -15,37 +17,26 @@ data2 = {temperature_record:[0,0,0,0,0,0,0,0]};
 // Datei einlesen für Device config
 function readDatei(txtfile, callback){
 	fs.readFile(txtfile, function(err, buffer)
-	{
-      if (err){
-		 console.log('Datei nicht vorhanden!');
-         console.error(err);
-         process.exit(1);
-      }
-
-    // Read data from file (using fast node ASCII encoding).
-    var data = buffer.toString('ascii').split("\n"); 					// trennen nach zeilenumbruch
-	tempid = data;														//reihenfolge der scripte wird hier umgestellt
-   	var data = {
-            devices:[{
-            list: data
-            }]};
-
-      // Execute call back with data
-      callback(data);
-   });
+		{
+			if (err){
+			console.log('Datei nicht vorhanden!');
+			 console.error(err);
+			process.exit(1);
+			}
+	// Read data from file (using fast node ASCII encoding).
+	var data = buffer.toString('ascii').split("\n"); 					// trennen nach zeilenumbruch
+	tempid = data;															     	//reihenfolge der scripte wird hier umgestellt
+	var data = {devices:[{list: data}]};
+	 // Execute call back with data
+	callback(data);
+	});
 };
 
+//daten in form bringen, 1 zeile, 1 wert
 function devices(daten){
-datenr = daten.dev0+"\n"+daten.dev1+"\n"+
-		 daten.dev2+"\n"+daten.dev3+"\n"+
-		 daten.dev4+"\n"+daten.dev5+"\n"+
-		 daten.dev6+"\n"+daten.dev7+"\n"+
-		 daten.dev8+"\n"+daten.dev9+"\n"+
-		 daten.dev10+"\n"+daten.dev11+"\n"+
-		 daten.dev12+"\n"+daten.dev13+"\n"+
-		 daten.dev14+"\n"+daten.dev15;
-console.log("Get ausgeführt");
-return datenr;
+	var datenr = '';
+	for (var name in daten) {datenr +=  daten[name]+"\n"}
+	return datenr;
 }
 
 // Temperatur auslesen. device steht für das script, welches den richtigen sensor abfragt.
@@ -75,54 +66,58 @@ readTemp(tempid[moehre], function(temp){
 );	
 }
 
-// Setup node http server
-var i = 0;
-var server = http.createServer(
-	// Our main server function
-	function(request, response)
-	{
-		// Grab the URL requested by the client and parse any query options
-		var url = require('url').parse(request.url, true);
-		var pathfile = url.pathname;
-		var query = url.query;
-		var url_parts = url.parse(request.url, true);
-		var daten = url_parts.query;
-		var subpath = pathfile.substr(1, 5);
-		var deviceid = pathfile.substr(6).replace(".json","");
-		console.log(query);
-		
-      // Test to see if it's a request for current temperature   
-      if (request.url == '/tnow.json'){
-			response.writeHead(200, { "Content-type": "application/json" });		
-			response.end(JSON.stringify(data2), "ascii");
-			//i ++;
-			//console.log('Senden:', i, data2.temperature_record[0]);
-      return;
-      }
+// muss noch implementiert werden
+function database() {
+db.serialize(function() {
+  db.run("CREATE TABLE data (info TEXT)");
 
-      if (pathfile== '/config1.json'){
+  var stmt = db.prepare("INSERT INTO data VALUES (?)");
+  for (var i = 0; i < 10; i++) {
+      stmt.run("set" + i);
+  }
+  stmt.finalize();
+
+  db.each("SELECT rowid AS id, info FROM data", function(err, row) {
+      console.log(row.id + ": " + row.info);
+  });
+});
+
+db.close();
+}
+
+// Setup node http server
+var server = http.createServer(
+function(request, response)
+{
+	// Grab the URL requested by the client and parse any query options
+	var url = require('url').parse(request.url, true);
+	var pathfile = url.pathname;
+	var query = url.query;
+	var url_parts = url.parse(request.url, true);
+	var daten = url_parts.query;
+		
+	if (request.url == '/tnow.json'){
+		response.writeHead(200, { "Content-type": "application/json" });		
+		response.end(JSON.stringify(data2), "ascii");
+		return;
+    }
+
+	if (pathfile== '/config1.json'){
             readDatei("devices.txt",function(data){
 			      response.writeHead(200, { "Content-type": "application/json" });		
 			      response.end(JSON.stringify(data), "ascii");
 				  console.log('Laden');
                });
-      return;
-      }		
-
-      if (pathfile== '/discover.json'){
-            readDatei("discover.txt",function(data){
-			      response.writeHead(200, { "Content-type": "application/json" });		
-			      response.end(JSON.stringify(data), "ascii");
-				  console.log('Discover');
-               });
-      return;
-      }		  
+    return;
+    }		
 	  
-      if (pathfile== '/get.htm'){
-		console.log('Device 1:', daten);
+      if (pathfile== '/get.json'){
 		fs.writeFile("devices.txt", devices(daten), function(err) {
 			if(err) {console.log(err);} else {console.log("The file was saved!");}
 			}); 
+		response.writeHead(200, { "Content-type": "application/json" });		
+	    response.end();
+		return;
 		}
 	
 	// damit bei aufruf der seite direkt die richtigen werte ausgegeben werden, fülle
@@ -140,11 +135,9 @@ var server = http.createServer(
 		return;
 	}		
 
-
 		else {
 			// Print requested file to terminal
 			//console.log('Request from '+ request.connection.remoteAddress +' for: ' + pathfile);
-			i = 0;
 			// Serve file using node-static			
 			staticServer.serve(request, response, function (err, result) {
 					if (err){
