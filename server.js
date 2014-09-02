@@ -10,7 +10,6 @@ var staticServer = new nodestatic.Server("html"); // Setup static server for "ht
 var child;
 var moehre = 0;
 var temparray = {};
-var array = fs.readFileSync('devices.txt').toString().split("\n");
 tempid = ["t1","t2","t3","t4","t5","t6","t7","t8","t9","t10","t11","t12","t13","t14","t15","t16"];
 data2 = {temperature_record:[0,0,0,0,0,0,0,0]};
 
@@ -32,7 +31,7 @@ function readDatei(txtfile, callback){
 	});
 };
 
-//daten in form bringen, 1 zeile, 1 wert
+//daten in form bringen, inhalt von daten rekursiv an datenr anhängen. endet mit einer leerzeile
 function devices(daten){
 	var datenr = '';
 	for (var name in daten) {datenr +=  daten[name]+"\n"}
@@ -106,7 +105,6 @@ function(request, response)
             readDatei("devices.txt",function(data){
 			      response.writeHead(200, { "Content-type": "application/json" });		
 			      response.end(JSON.stringify(data), "ascii");
-				  console.log('Laden');
                });
     return;
     }		
@@ -122,10 +120,11 @@ function(request, response)
 	
 	// damit bei aufruf der seite direkt die richtigen werte ausgegeben werden, fülle
 	// ich das "ausgabe array" mit daten aus der datein devices.txt
-      if (pathfile== '/multi.htm'){
+	// implementierung fehlt noch
+    /*if (pathfile== '/multi.htm'){
 			readDatei("devices.txt", function(data){console.log("passiert");});
 		}
-		
+	*/
 	// Handler for favicon.ico requests
 	if (pathfile == '/img/favicon.ico'){
 		response.writeHead(200, {'Content-Type': 'image/x-icon'});
@@ -134,28 +133,23 @@ function(request, response)
 		console.log('favicon requested');
 		return;
 	}		
-
 		else {
-			// Print requested file to terminal
-			//console.log('Request from '+ request.connection.remoteAddress +' for: ' + pathfile);
 			// Serve file using node-static			
 			staticServer.serve(request, response, function (err, result) {
-					if (err){
-						// Log the error
-						sys.error("Error serving " + request.url + " - " + err.message);
-						
-						// Respond to the client
-						response.writeHead(err.status, err.headers);
-						response.end('Error 404 - file not found');
-						return;
-						}
-					return;	
-					})
+				if (err){
+					// Log the error
+					sys.error("Error serving " + request.url + " - " + err.message);	
+					// Respond to the client
+					response.writeHead(err.status, err.headers);
+					response.end('Error 404 - file not found');
+					return;
+					}
+				return;	
+				})
 		}
 });
 
 // Enable server
 server.listen(8000);
-// Log message
 console.log('Server running at :8000');
 loopi();
