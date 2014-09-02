@@ -4,6 +4,7 @@
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <link rel="stylesheet" type="text/css" href="style.css">
 <title>piTemp</title>
+<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
 <script src="../libraries/jquery-1.8.3.min.js" type="text/javascript"></script>
 <script src="../libraries/RGraph.common.core.js" ></script>
 <script src="../libraries/RGraph.common.effects.js" ></script>
@@ -22,26 +23,16 @@
 	</nav>
 <aside>
 	<div id="buttons">
-		<b>Status:</b>
-		<br>
-		<span id="status">off</span>
-		<br><br>
-		<b>Control:</b>
-		<br>
+		<b>Status:</b><span id="status">off</span>	<br>
+		<b>Limit : </b><span id="limit">0</span>°C<br><br>
+		<b>Control:</b><br>
 		<button onClick="choose('on')">On</button>
-		<button onClick="choose('off')">Off</button>
-		<br><br>
-		Timing:
-		<br>
-		<input type="range" min="0" max="1000" value="500" step="100" autocomplete="off" onchange="timevar = this.value">
-		<br>
-		Min :
-		<input type="text" size="3" maxlength="3" id="mint"/>
-		<br>
-		Max:
-		<input type="text" size="3" maxlength="3" id="maxt"/>
-		<br>
-		<button onClick="scale()">Scale</button>
+		<button onClick="choose('off')">Off</button><br><br>
+		<b>Timing:</b><br>
+		<input type="range" min="0" max="1000" value="500" step="100" autocomplete="off" onchange="timevar = this.value"><br><br>
+		<b>Scale:</b><br>Min :<input type="text" size="3" maxlength="3" id="mint"/><br>Max:<input type="text" size="3" maxlength="3" id="maxt"/>
+		<button onClick="scale()">Go</button><br><br>
+		<b>Limit:</b><br><input type="number"  min="0" max="120" step="5" value="0" id="limitt"/><button onClick="limits()">Go</button>
 	</div>	
 </aside>
 <section id="content">			
