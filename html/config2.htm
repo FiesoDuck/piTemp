@@ -1,112 +1,51 @@
-<!DOCTYPE html>
+
 <html>
 <head>
-<title>piTemp Konfiguration</title>
-<META HTTP-EQUIV="Pragma" CONTENT="no-cache">
-<META HTTP-EQUIV="Expires" CONTENT="-1">
-<link rel="stylesheet" type="text/css" href="style.css">
-<script src="../libraries/jquery-1.8.3.min.js" type="text/javascript"></script>
-<script type="text/javascript">
-schalter = 'leer';
-devices = 0;
-
-// Daten aus json lesen, abhängig von User Eingabe
-function getData(deviceurl){	
-	var data;
-	var input = document.createElement('input');
-
-	input.type = "text"; 
-		$.ajax({
-			type: "GET",
-			url: 'check.json',													// Daten-Stream url
-			data: data,															// Variable für json Container
-			async: true,										
-			dataType: "json",
-			success: function(data){										// nur ausführen wenn getJson (hier ajax) erfolgreich war
-				moehre = 0;
-				devices = data.devices[0].list;
-				console.log('Angekommen', devices);
-				devices.forEach(function(entry) {
-					$("#dev"+moehre).val(devices[moehre]);
-					console.log('Angekommen', devices[moehre], moehre);
-					moehre++;
-				});
-			},
-			error: function(){alert('Der Server antwortet nicht!');}
-			});		
-}	
-
-function getDiscover(){}
-
-
-function choose(choice) {
-	if (choice == 'send') {
-		 console.log('send');
-		 $('form').submit();
-		}
-	else if (choice == 'clear') {
-		$('input').val('');				//alle input mit '' füllen
-		console.log('clear');
-	}
-	else if (choice == 'load') {
-		getData();
-	}
-	else if (choice == 'discover') {
-		getDiscover();
-	}
-}
-</script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 </head>
 <body>
-<div id="container">
-<img src="img/banner.png"/></a>
-	<nav>
-		<ul>
-			<li><a href="multi.htm">read temperature</a></li>
-			<li><a href="config1.htm">config</a></li>
-			<li><a href="config2.htm">config 2</a></li>
-		</ul>
-	</nav>
-	<aside>
-		<div id="leer"></div>
-			<div id="buttons">
-				<b>control:</b>
-				<br>
-				<button onClick="choose('send')">send</button>
-				<button onClick="choose('load')">load</button>
-				<button onClick="choose('clear')">clear</button>
-				<br><br>
-				<b>note:</b>
-				<br>
-				ls -m -1 /sys/bus/w1/devices
-			</div>	
-	</aside>
-	<section id="content">
-		<form action="get.htm">
-		<article  style="float:left;width:40%">
-					<p>Device 1: <input id="dev0" name="dev0" type="text" size="30" maxlength="30" autocomplete="off"></p>
-					<p>Device 2: <input id="dev1" name="dev1" type="text" size="30" maxlength="40" autocomplete="off"></p>
-					<p>Device 3: <input id="dev2" name="dev2" type="text" size="30" maxlength="30" autocomplete="off"></p>
-					<p>Device 4: <input id="dev3" name="dev3" type="text" size="30" maxlength="40" autocomplete="off"></p>
-					<p>Device 5: <input id="dev4" name="dev4" type="text" size="30" maxlength="30" autocomplete="off"></p>
-					<p>Device 6: <input id="dev5" name="dev5" type="text" size="30" maxlength="40" autocomplete="off"></p>
-					<p>Device 7: <input id="dev6" name="dev6" type="text" size="30" maxlength="30" autocomplete="off"></p>
-					<p>Device 8: <input id="dev7" name="dev7" type="text" size="30" maxlength="40" autocomplete="off"></p>
-		</article>	
-		<article  style="float:right;width:50%">
-					<p>Device 9: <input id="dev8" name="dev8" type="text" size="30" maxlength="30" autocomplete="off"></p>
-					<p>Device 10:<input id="dev9" name="dev9" type="text" size="30" maxlength="40" autocomplete="off"></p>
-					<p>Device 11:<input id="dev10" name="dev10" type="text" size="30" maxlength="30" autocomplete="off"></p>
-					<p>Device 12:<input id="dev11" name="dev11" type="text" size="30" maxlength="40" autocomplete="off"></p>
-					<p>Device 13:<input id="dev12" name="dev12" type="text" size="30" maxlength="30" autocomplete="off"></p>
-					<p>Device 14:<input id="dev13" name="dev13" type="text" size="30" maxlength="40" autocomplete="off"></p>
-					<p>Device 15:<input id="dev14" name="dev14" type="text" size="30" maxlength="30" autocomplete="off"></p>
-					<p>Device 16:<input id="dev15" name="dev15" type="text" size="30" maxlength="40" autocomplete="off"></p>					
-		</article>		
-		</form>
-	</section>
- <footer>		
- </footer>
-</div>
+<form name="ajaxform" id="ajaxform" action="get.json" method="GET">
+	First Name: <input type="text" name="dev0" value ="Ravi"/> <br/>
+	Last Name: <input type="text" name="dev1" value ="Shanker" /> <br/>
+	Email : <input type="text" name="email" value="xx@xxx.com"/> <br/>
+</form>
+<input type="button"  id="simple-post" value="Run Code" />
+<div id="simple-msg"></div>
+
+<script>
+$(document).ready(function()
+{
+
+	
+$("#simple-post").click(function()
+{
+	$("#ajaxform").submit(function(e)
+	{
+		$("#simple-msg").html("<img src='loading.gif'/>");
+		var postData = $(this).serializeArray();
+		var formURL = $(this).attr("action");
+		$.ajax(
+		{
+			url : formURL,
+			type: "GET",
+			data : postData,
+			success:function(data, textStatus, jqXHR) 
+			{
+				$("#simple-msg").html('<pre><code class="prettyprint">'+data+'</code></pre>');
+
+			},
+			error: function(jqXHR, textStatus, errorThrown) 
+			{
+				$("#simple-msg").html('<pre><code class="prettyprint">AJAX Request Failed<br/> textStatus='+textStatus+', errorThrown='+errorThrown+'</code></pre>');
+			}
+		});
+	    e.preventDefault();	//STOP default action
+	    e.unbind();
+	});
+		
+	$("#ajaxform").submit(); //SUBMIT FORM
+});
+
+});
+</script>
 </body>
-</html>
