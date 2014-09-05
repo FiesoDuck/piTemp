@@ -5,7 +5,7 @@ var schalter = 0;					// on / off für Status
 var focusvar = 1;					// browserfenster im focus ja/nein
 var limit = 0;
 var limitwar = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
-var cords = [40,190];											// skala 0 punkte, 190 - 166 ist obere grenze für höhe -> 24, Höhe / Max Skala * Grenze  //- cords[1] / graph[moehre].max * limit ,
+var cords = [40,190, 2];											// skala 0 punkte, 190 - 166 ist obere grenze für höhe -> 24, Höhe / Max Skala * Grenze  //- cords[1] / graph[moehre].max * limit ,
 
 // browserfenster im focus 1 sonst 0
 window.onblur= function() {
@@ -32,6 +32,40 @@ $.ajax({
 	console.log("get ./tnow.json");		
 	celsius = data.temperature_record;
 	grenze();
+	},
+	error: function(){alert('Der Server antwortet nicht!'); schalter = "error";}
+	});	
+}	
+
+function getLimits(){	
+var data;
+var jsonurl = './limitsnow.json';
+$.ajax({
+	type: "GET",
+	url: jsonurl,						// Daten-Stream url
+	data: data,							// Variable für json Container
+	async: true,						
+	dataType: "json",
+	success: function(data){			// nur ausführen wenn getJson (hier ajax) erfolgreich war sonst zu error:
+	console.log("get ./limitsnow.json");		
+	limits = data.dev0.max;
+	console.log(limits);
+	graph[16] = new RGraph.Drawing.Rect({id: 'g0', x: cords[0] , 	y: cords[1] - 166 / graph[0].max * data.dev0.max, width: 38, height: 2}).draw();	
+	graph[17] = new RGraph.Drawing.Rect({id: 'g0', x: cords[0] , 	y: cords[1] - 166 / graph[0].max * data.dev0.min, width: 38, height: 2}).draw();
+	graph[18] = new RGraph.Drawing.Rect({id: 'g1', x: cords[2] , 	y: cords[1] - 166 / graph[1].max * data.dev1.max, width: 38, height: 2}).draw();
+	graph[19] = new RGraph.Drawing.Rect({id: 'g1', x: cords[2] , 	y: cords[1] - 166 / graph[1].max * data.dev1.min, width: 38, height: 2}).draw();
+	graph[20] = new RGraph.Drawing.Rect({id: 'g2', x: cords[0] , 	y: cords[1] - 166 / graph[2].max * data.dev2.max, width: 38, height: 2}).draw();
+	graph[21] = new RGraph.Drawing.Rect({id: 'g2', x: cords[0] , 	y: cords[1] - 166 / graph[2].max * data.dev2.min, width: 38, height: 2}).draw();
+	graph[22] = new RGraph.Drawing.Rect({id: 'g3', x: cords[2] , 	y: cords[1] - 166 / graph[3].max * data.dev3.max, width: 38, height: 2}).draw();
+	graph[23] = new RGraph.Drawing.Rect({id: 'g3', x: cords[2] , 	y: cords[1] - 166 / graph[3].max * data.dev3.min, width: 38, height: 2}).draw();
+	graph[24] = new RGraph.Drawing.Rect({id: 'g4', x: cords[0] , 	y: cords[1] - 166 / graph[4].max * data.dev4.max, width: 38, height: 2}).draw();
+	graph[25] = new RGraph.Drawing.Rect({id: 'g4', x: cords[0] , 	y: cords[1] - 166 / graph[4].max * data.dev4.min, width: 38, height: 2}).draw();
+	graph[26] = new RGraph.Drawing.Rect({id: 'g5', x: cords[2] , 	y: cords[1] - 166 / graph[5].max * data.dev5.max, width: 38, height: 2}).draw();
+	graph[27] = new RGraph.Drawing.Rect({id: 'g5', x: cords[2] , 	y: cords[1] - 166 / graph[5].max * data.dev5.min, width: 38, height: 2}).draw();
+	graph[28] = new RGraph.Drawing.Rect({id: 'g6', x: cords[0] , 	y: cords[1] - 166 / graph[6].max * data.dev6.max, width: 38, height: 2}).draw();
+	graph[29] = new RGraph.Drawing.Rect({id: 'g6', x: cords[0] , 	y: cords[1] - 166 / graph[6].max * data.dev6.min, width: 38, height: 2}).draw();
+	graph[30] = new RGraph.Drawing.Rect({id: 'g7', x: cords[2] , 	y: cords[1] - 166 / graph[7].max * data.dev7.max, width: 38, height: 2}).draw();
+	graph[31] = new RGraph.Drawing.Rect({id: 'g7', x: cords[2] , 	y: cords[1] - 166 / graph[7].max * data.dev7.min, width: 38, height: 2}).draw();	
 	},
 	error: function(){alert('Der Server antwortet nicht!'); schalter = "error";}
 	});	
@@ -88,8 +122,6 @@ getData();
 
 function tester() {
 
-//console.log(RGraph.ObjectRegistry.getObjectsByCanvasID('g0'));
-//console.log(RGraph.ObjectRegistry.getObjectsByType('drawing.rect'));
 RGraph.ObjectRegistry.Remove(graph[16]);
 graph[16] = new RGraph.Drawing.Rect({id: 'g0', x: cords[0] , 	y: cords[1] -100 , width: 38, height: 30});
 RGraph.redraw();
@@ -97,15 +129,15 @@ RGraph.redraw();
 
 function scale() {
 RGraph.Reset(g0);
-var mint=$('#mint').value; 
-var maxt=$('#maxt').value;
+var mint=$('#mint').val(); 
+var maxt=$('#maxt').val();
 graph[0]  = new RGraph.VProgress({id: 'g0',  min: Number(mint), max: Number(maxt), value: 0, options: {scale: {decimals: 1}, gutter: {right: 2, left:  40, bottom: 10}, labels: {position: "left" , count: 5}, colors:['#5A8F29']}}).draw();
 }
 
-function limits() {
+function setlimits() {
 RGraph.ObjectRegistry.Remove(graph[16]);
 var teste = $('#limitt').type;
-limit = parseInt($('#limitt').value); 
+limit = parseInt($('#limitt').val()); 
 console.log(typeof(limit));
 if (limit == 0) {
 graph[16] = new RGraph.Drawing.Rect({id: 'g0', x: cords[0] , 	y: cords[1]  - 166 / graph[moehre].max * limit, width: 38, height: 0});
@@ -135,5 +167,4 @@ graph[12] = new RGraph.VProgress({id: 'g12', min: 0, max: 120, value: 0, options
 graph[13] = new RGraph.VProgress({id: 'g13', min: 0, max: 40,  value: 0, options: {scale: {decimals: 1}, gutter: {left:  2, right: 40, bottom: 10}, labels: {position: "right", count: 5}, colors:['#3C7DC4']}}).draw();
 graph[14] = new RGraph.VProgress({id: 'g14', min: 0, max: 120, value: 0, options: {scale: {decimals: 1}, gutter: {right: 2, left:  40, bottom: 10}, labels: {position: "left" , count: 5}, colors:['#5A8F29']}}).draw();
 graph[15] = new RGraph.VProgress({id: 'g15', min: 0, max: 40,  value: 0, options: {scale: {decimals: 1}, gutter: {left:  2, right: 40, bottom: 10}, labels: {position: "right", count: 5}, colors:['#3C7DC4']}}).draw();
-graph[16] = new RGraph.Drawing.Rect({id: 'g0', x: cords[0] , 	y: cords[1] , width: 38, height: 0}).draw();
 }

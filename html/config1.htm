@@ -17,7 +17,7 @@ function getData(deviceurl){
 	input.type = "text"; 
 		$.ajax({
 			type: "GET",
-			url: 'config1.json',													// Daten-Stream url
+			url: 'rdevices.json',													// Daten-Stream url
 			data: data,															// Variable für json Container
 			async: true,										
 			dataType: "json",
@@ -102,7 +102,7 @@ function choose(choice) {
 	var data =  $('form').serialize() ;					<!-- inhalt von form wird zu string gepackt -->
 	$.ajax({		
 		type: "get",
-		url: "get.json",											<!-- hier wirds hingeschickt -->
+		url: "wdevices.json",											<!-- hier wirds hingeschickt -->
 		data: data,
 		success: function(){alert('Daten wurden gespeichert!');},
 		error: function(){alert('Der Server antwortet nicht!');}

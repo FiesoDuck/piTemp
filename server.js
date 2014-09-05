@@ -10,7 +10,7 @@ var staticServer = new nodestatic.Server("html"); // Setup static server for "ht
 var child;
 var moehre = 0;
 var temparray = {};
-tempid = ["t1","t2","t3","t4","t5","t6","t7","t8","t9","t10","t11","t12","t13","t14","t15","t16"];
+tempid = ["t1","t2","t2","t2","t2","t2","t2","t2","t2","t2","t2","t2","t2","t2","t2","t2"];
 data2 = {temperature_record:[0,0,0,0,0,0,0,0]};
 
 // Datei einlesen für Device config
@@ -65,6 +65,40 @@ readTemp(tempid[moehre], function(temp){
 );	
 }
 
+function readLimits(txtfile, callback){
+	fs.readFile(txtfile, function(err, buffer)
+		{
+			if (err){
+			console.log('Datei nicht vorhanden!');
+			 console.error(err);
+			process.exit(1);
+			}
+	// Read data from file (using fast node ASCII encoding).
+	var data = buffer.toString('ascii').split("\n"); 					// trennen nach zeilenumbruch
+	var data = {
+		dev0:{min:data[0],max:data[1]},
+		dev1:{min:data[2],max:data[3]},
+		dev2:{min:data[4],max:data[5]},
+		dev3:{min:data[6],max:data[7]},		
+		dev4:{min:data[8],max:data[9]},
+		dev5:{min:data[10],max:data[11]},		
+		dev6:{min:data[12],max:data[13]},
+		dev7:{min:data[14],max:data[15]},
+		dev8:{min:data[16],max:data[17]},
+		dev9:{min:data[18],max:data[19]},
+		dev10:{min:data[20],max:data[21]},
+		dev11:{min:data[22],max:data[23]},		
+		dev12:{min:data[24],max:data[25]},
+		dev13:{min:data[26],max:data[27]},		
+		dev14:{min:data[28],max:data[29]},
+		dev15:{min:data[30],max:data[31]}		
+		};
+	
+	// Execute call back with data
+	callback(data);
+	});
+}
+
 // muss noch implementiert werden
 function database() {
 db.serialize(function() {
@@ -100,8 +134,16 @@ function(request, response)
 		response.end(JSON.stringify(data2), "ascii");
 		return;
     }
-
-	if (pathfile== '/config1.json'){
+	
+	if (request.url == '/limitsnow.json'){
+            readLimits("limits.txt",function(data){
+			      response.writeHead(200, { "Content-type": "application/json" });		
+			      response.end(JSON.stringify(data), "ascii");
+               });
+	    return;
+    }
+	
+	if (pathfile== '/rdevices.json'){
             readDatei("devices.txt",function(data){
 			      response.writeHead(200, { "Content-type": "application/json" });		
 			      response.end(JSON.stringify(data), "ascii");
@@ -109,7 +151,7 @@ function(request, response)
     return;
     }		
 	  
-      if (pathfile== '/get.json'){
+      if (pathfile== '/wdevices.json'){
 		fs.writeFile("devices.txt", devices(daten), function(err) {
 			if(err) {console.log(err);} else {console.log("The file was saved!");}
 			}); 
@@ -117,7 +159,24 @@ function(request, response)
 	    response.end();
 		return;
 		}
-	
+
+	if (pathfile== '/rlimits.json'){
+            readDatei("limits.txt",function(data){
+			      response.writeHead(200, { "Content-type": "application/json" });		
+			      response.end(JSON.stringify(data), "ascii");
+               });
+    return;
+    }		
+	  
+      if (pathfile== '/wlimits.json'){
+		fs.writeFile("limits.txt", devices(daten), function(err) {
+			if(err) {console.log(err);} else {console.log("The file was saved!");}
+			}); 
+		response.writeHead(200, { "Content-type": "application/json" });		
+	    response.end();
+		return;
+		}		
+		
 	// damit bei aufruf der seite direkt die richtigen werte ausgegeben werden, fülle
 	// ich das "ausgabe array" mit daten aus der datein devices.txt
 	// implementierung fehlt noch

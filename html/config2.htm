@@ -7,18 +7,17 @@
 <link rel="stylesheet" type="text/css" href="style.css">
 <script src="../libraries/jquery-1.8.3.min.js" type="text/javascript"></script>
 <script type="text/javascript">
-schalter = 'leer';
-devices = 0;
+
 
 // Daten aus json lesen, abhängig von User Eingabe
 function getData(deviceurl){
 	var data;
 	var input = document.createElement('input');
-
+	var devices = 0;
 	input.type = "text"; 
 		$.ajax({
 			type: "GET",
-			url: 'config1.json',													// Daten-Stream url
+			url: 'rlimits.json',													// Daten-Stream url
 			data: data,															// Variable für json Container
 			async: true,										
 			dataType: "json",
@@ -27,7 +26,7 @@ function getData(deviceurl){
 				devices = data.devices[0].list;
 				console.log('Angekommen', devices);
 				devices.forEach(function(entry) {
-					$("#dev"+moehre).val(devices[moehre]);
+					$("#limit"+moehre).val(devices[moehre]);
 					console.log('Angekommen', devices[moehre], moehre);
 					moehre++;
 				});
@@ -37,16 +36,13 @@ function getData(deviceurl){
 }	
 
 function choose(choice) {
-	if (choice == 'send') {
-		 console.log('send');
-		 $('form').submit();
-		}
-	else if (choice == 'clear') {
-				document.getElementById("form1").reset();		//alle input mit '' füllen
+	if (choice == 'clear') {
+		document.getElementById("form1").reset();		//alle input resetten, id gesteuert
 		console.log('clear');
 	}
 	else if (choice == 'load') {
 		getData();
+		console.log('load');
 	}
 }
 </script>
@@ -66,38 +62,34 @@ function choose(choice) {
 			<div id="buttons">
 				<b>control:</b>
 				<br>
-				<input type="button" id="enter" value="send">
+				<input type="button" id="enter" value="send">		<!--	 id = enter ordnet "input"-button zu -->
 				<button onClick="choose('load')">load</button>
 				<button onClick="choose('clear')">clear</button>
-				<br><br>
-				<b>note:</b>
-				<br>
-				ls -m -1 /sys/bus/w1/devices
 			</div>	
 	</aside>
 	<section id="content">
+		
 		<form id="form1">
-		<article  style="float:left;width:40%">
-					<p>Device 1: <input id="dev0" name="dev0" type="text" size="30" maxlength="30" autocomplete="off"></p>
-					<p>Device 2: <input id="dev1" name="dev1" type="text" size="30" maxlength="40" autocomplete="off"></p>
-					<p>Device 3: <input id="dev2" name="dev2" type="text" size="30" maxlength="30" autocomplete="off"></p>
-					<p>Device 4: <input id="dev3" name="dev3" type="text" size="30" maxlength="40" autocomplete="off"></p>
-					<p>Device 5: <input id="dev4" name="dev4" type="text" size="30" maxlength="30" autocomplete="off"></p>
-					<p>Device 6: <input id="dev5" name="dev5" type="text" size="30" maxlength="40" autocomplete="off"></p>
-					<p>Device 7: <input id="dev6" name="dev6" type="text" size="30" maxlength="30" autocomplete="off"></p>
-					<p>Device 8: <input id="dev7" name="dev7" type="text" size="30" maxlength="40" autocomplete="off"></p>
-		</article>	
+		<article  style="float:left;width:50%">
+					<p>Device 1: <input id="limit0" name="limit0" type="text" size="10" maxlength="10" autocomplete="off"><input id="limit1" name="limit1" type="text" size="10" maxlength="10" autocomplete="off"></p>
+					<p>Device 2: <input id="limit2" name="limit2" type="text" size="10" maxlength="10" autocomplete="off"><input id="limit3" name="limit3" type="text" size="10" maxlength="10" autocomplete="off"></p>
+					<p>Device 3: <input id="limit4" name="limit4" type="text" size="10" maxlength="10" autocomplete="off"><input id="limit5" name="limit5" type="text" size="10" maxlength="10" autocomplete="off"></p>
+					<p>Device 4: <input id="limit6" name="limit6" type="text" size="10" maxlength="10" autocomplete="off"><input id="limit7" name="limit7" type="text" size="10" maxlength="10" autocomplete="off"></p>
+					<p>Device 5: <input id="limit8" name="limit8" type="text" size="10" maxlength="10" autocomplete="off"><input id="limit9" name="limit9" type="text" size="10" maxlength="10" autocomplete="off"></p>
+					<p>Device 6: <input id="limit10" name="limit10" type="text" size="10" maxlength="10" autocomplete="off"><input id="limit11" name="limit11" type="text" size="10" maxlength="10" autocomplete="off"></p>
+					<p>Device 7: <input id="limit12" name="limit12" type="text" size="10" maxlength="10" autocomplete="off"><input id="limit13" name="limit13" type="text" size="10" maxlength="10" autocomplete="off"></p>
+					<p>Device 8: <input id="limit14" name="limit14" type="text" size="10" maxlength="10" autocomplete="off"><input id="limit15" name="limit15" type="text" size="10" maxlength="10" autocomplete="off"></p>
+		</article>						
 		<article  style="float:right;width:50%">
-					<p>Device 9: <input id="dev8" name="dev8" type="text" size="30" maxlength="30" autocomplete="off"></p>
-					<p>Device 10:<input id="dev9" name="dev9" type="text" size="30" maxlength="40" autocomplete="off"></p>
-					<p>Device 11:<input id="dev10" name="dev10" type="text" size="30" maxlength="30" autocomplete="off"></p>
-					<p>Device 12:<input id="dev11" name="dev11" type="text" size="30" maxlength="40" autocomplete="off"></p>
-					<p>Device 13:<input id="dev12" name="dev12" type="text" size="30" maxlength="30" autocomplete="off"></p>
-					<p>Device 14:<input id="dev13" name="dev13" type="text" size="30" maxlength="40" autocomplete="off"></p>
-					<p>Device 15:<input id="dev14" name="dev14" type="text" size="30" maxlength="30" autocomplete="off"></p>
-					<p>Device 16:<input id="dev15" name="dev15" type="text" size="30" maxlength="40" autocomplete="off"></p>			
-		</article>		
-						
+					<p>Device 9 : <input id="limit16" name="limit16" type="text" size="10" maxlength="10" autocomplete="off"><input id="limit17" name="limit17" type="text" size="10" maxlength="10" autocomplete="off"></p>
+					<p>Device 10:<input id="limit18" name="limit18" type="text" size="10" maxlength="10" autocomplete="off"><input id="limit19" name="limit19" type="text" size="10" maxlength="10" autocomplete="off"></p>
+					<p>Device 11:<input id="limit20" name="limit20" type="text" size="10" maxlength="10" autocomplete="off"><input id="limit21" name="limit21" type="text" size="10" maxlength="10" autocomplete="off"></p>
+					<p>Device 12:<input id="limit22" name="limit22" type="text" size="10" maxlength="10" autocomplete="off"><input id="limit23" name="limit23" type="text" size="10" maxlength="10" autocomplete="off"></p>
+					<p>Device 13:<input id="limit24" name="limit24" type="text" size="10" maxlength="10" autocomplete="off"><input id="limit25" name="limit25" type="text" size="10" maxlength="10" autocomplete="off"></p>
+					<p>Device 14:<input id="limit26" name="limit26" type="text" size="10" maxlength="10" autocomplete="off"><input id="limit27" name="limit27" type="text" size="10" maxlength="10" autocomplete="off"></p>
+					<p>Device 15:<input id="limit28" name="limit28" type="text" size="10" maxlength="10" autocomplete="off"><input id="limit29" name="limit29" type="text" size="10" maxlength="10" autocomplete="off"></p>
+					<p>Device 16:<input id="limit30" name="limit30" type="text" size="10" maxlength="10" autocomplete="off"><input id="limit31" name="limit31" type="text" size="10" maxlength="10" autocomplete="off"></p>			
+		</article>	
 		</form>
  	</section>
  <footer>		
@@ -105,17 +97,17 @@ function choose(choice) {
 </div>
 </body>
  <script type="text/javascript">
-      $('#enter').click(function(){  
-           var data =  $('form').serialize() ;
-			console.log(data);
-            $.ajax({
-                type: "get",
-                url: "get.htm",
-                data: data,
-				success: function(){alert('Daten wurden gespeichert!');},
-				error: function(){alert('Der Server antwortet nicht!');}
-             });
-            return false;
-        });   
+ $('#enter').click(function(){  							<!-- wenn id=enter "click" passiert was -->
+	console.log("send");
+	var data =  $('form').serialize() ;					<!-- inhalt von form wird zu string gepackt -->
+	$.ajax({		
+		type: "get",
+		url: "wlimits.json",											<!-- hier wirds hingeschickt -->
+		data: data,
+		success: function(){alert('Daten wurden gespeichert!');},
+		error: function(){alert('Der Server antwortet nicht!');}
+    });
+return false;														<!-- verhindert die default action des click handler, DOM könnte auch triggern sonst --!>
+});   
 </script>	
 </html>
