@@ -5,8 +5,9 @@ var schalter = 0;					// on / off für Status
 var focusvar = 1;					// browserfenster im focus ja/nein
 var limit = 0;
 var limitwar = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
-// browserfenster im focus 1 sonst 0
+var cords = [40,190];											// skala 0 punkte, 190 - 166 ist obere grenze für höhe -> 24, Höhe / Max Skala * Grenze  //- cords[1] / graph[moehre].max * limit ,
 
+// browserfenster im focus 1 sonst 0
 window.onblur= function() {
 focusvar=0;
 $('#status').text("halt");
@@ -37,43 +38,20 @@ $.ajax({
 }	
 
 function grenze ()  {
-if (limit != 0 && celsius[moehre] >= limit && limitwar[moehre]==0) { 
-		RGraph.Reset('g'+moehre);
-		if (moehre & 1) {
-			graph[moehre]  = new RGraph.VProgress({
-				id: 'g'+moehre,
-				min: 0, 
-				max: 40,
-				value: celsius[moehre],
-				options: {scale: {decimals: 1},
-				gutter: {left:  2, right: 40, bottom: 10},
-				labels: {position: "right", count: 5},
-				colors:['#FF0000']}
-				});
+if (limit != 0 && celsius[moehre] > limit && limitwar[moehre]==0) { 
+			graph[moehre].set('colors', ['#FF0000']);
+			limitwar[moehre] = 1;
 			}
-		else {
-			graph[moehre]  = new RGraph.VProgress({
-				id: 'g'+moehre,
-				min: 0,
-				max: 120,
-				value: celsius[moehre],
-				options: {scale: {decimals: 1},
-				gutter: {right: 2, left:  40, bottom: 10},
-				labels: {position: "left" , count: 5},
-				colors:['#FF0000']}
-				});
-			}
-		limitwar[moehre] = 1;
-	}
-else if (limit!=0 &&  celsius[moehre] <= limit  && limitwar[moehre]==1) {
+else if (limit!=0 &&  celsius[moehre] < limit  && limitwar[moehre]==1) {
 		 limitwar[moehre]=0;
 		if (moehre & 1) {
-				graph[moehre].colors = '#3C7DC4'.redraw;
+				graph[moehre].set('colors', ['#3C7DC4']);
 			}
 		else {
-				graph[moehre].colors ='#5A8F29'.redraw;
+				graph[moehre].set('colors', ['#5A8F29']);
 			}
 		}
+RGraph.redraw();
 ausgeben();
 }
 
@@ -107,18 +85,36 @@ function choose(choice){
 schalter = choice;
 getData();
 }
+
+function tester() {
+
+//console.log(RGraph.ObjectRegistry.getObjectsByCanvasID('g0'));
+//console.log(RGraph.ObjectRegistry.getObjectsByType('drawing.rect'));
+RGraph.ObjectRegistry.Remove(graph[16]);
+graph[16] = new RGraph.Drawing.Rect({id: 'g0', x: cords[0] , 	y: cords[1] -100 , width: 38, height: 30});
+RGraph.redraw();
+}
+
 function scale() {
 RGraph.Reset(g0);
-var mint=document.getElementById('mint').value; 
-var maxt=document.getElementById('maxt').value;
+var mint=$('#mint').value; 
+var maxt=$('#maxt').value;
 graph[0]  = new RGraph.VProgress({id: 'g0',  min: Number(mint), max: Number(maxt), value: 0, options: {scale: {decimals: 1}, gutter: {right: 2, left:  40, bottom: 10}, labels: {position: "left" , count: 5}, colors:['#5A8F29']}}).draw();
 }
 
 function limits() {
-var teste = document.getElementById('limitt').type;
-limit = document.getElementById('limitt').value; 
-if (limit == "") {alert("Bitte Zahl eingeben!")}
-else {console.log(limit); $('#limit').text(limit)}
+RGraph.ObjectRegistry.Remove(graph[16]);
+var teste = $('#limitt').type;
+limit = parseInt($('#limitt').value); 
+console.log(typeof(limit));
+if (limit == 0) {
+graph[16] = new RGraph.Drawing.Rect({id: 'g0', x: cords[0] , 	y: cords[1]  - 166 / graph[moehre].max * limit, width: 38, height: 0});
+}
+else {graph[16] = new RGraph.Drawing.Rect({id: 'g0', x: cords[0] , 	y: cords[1]  - 166 / graph[moehre].max * limit, width: 38, height: 2});}
+
+RGraph.redraw();
+$('#limit').text(limit);
+
 }
 // graphen beim Seitenaufbau einmalig zeichnen
 // ID von Canvas, min, max, value 0 -> startwert, gutter abstand von graph zu canvas (?), labels seite und wieviele, farbe -> draw!
@@ -139,4 +135,5 @@ graph[12] = new RGraph.VProgress({id: 'g12', min: 0, max: 120, value: 0, options
 graph[13] = new RGraph.VProgress({id: 'g13', min: 0, max: 40,  value: 0, options: {scale: {decimals: 1}, gutter: {left:  2, right: 40, bottom: 10}, labels: {position: "right", count: 5}, colors:['#3C7DC4']}}).draw();
 graph[14] = new RGraph.VProgress({id: 'g14', min: 0, max: 120, value: 0, options: {scale: {decimals: 1}, gutter: {right: 2, left:  40, bottom: 10}, labels: {position: "left" , count: 5}, colors:['#5A8F29']}}).draw();
 graph[15] = new RGraph.VProgress({id: 'g15', min: 0, max: 40,  value: 0, options: {scale: {decimals: 1}, gutter: {left:  2, right: 40, bottom: 10}, labels: {position: "right", count: 5}, colors:['#3C7DC4']}}).draw();
+graph[16] = new RGraph.Drawing.Rect({id: 'g0', x: cords[0] , 	y: cords[1] , width: 38, height: 0}).draw();
 }
