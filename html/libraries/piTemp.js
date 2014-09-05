@@ -4,8 +4,9 @@ var graph = {};						// array mit graphen
 var schalter = 0;					// on / off für Status
 var focusvar = 1;					// browserfenster im focus ja/nein
 var limit = 0;
-
+var limitwar = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
 // browserfenster im focus 1 sonst 0
+
 window.onblur= function() {
 focusvar=0;
 $('#status').text("halt");
@@ -13,7 +14,7 @@ $('#status').text("halt");
 
 window.onfocus= function() {
 focusvar=1;
-ausgeben ();
+grenze();
 }
 
 // daten von server besorgen
@@ -29,11 +30,52 @@ $.ajax({
 	success: function(data){			// nur ausführen wenn getJson (hier ajax) erfolgreich war sonst zu error:
 	console.log("get ./tnow.json");		
 	celsius = data.temperature_record;
-	ausgeben();						   
+	grenze();
 	},
 	error: function(){alert('Der Server antwortet nicht!'); schalter = "error";}
 	});	
 }	
+
+function grenze ()  {
+if (limit != 0 && celsius[moehre] >= limit && limitwar[moehre]==0) { 
+		RGraph.Reset('g'+moehre);
+		if (moehre & 1) {
+			graph[moehre]  = new RGraph.VProgress({
+				id: 'g'+moehre,
+				min: 0, 
+				max: 40,
+				value: celsius[moehre],
+				options: {scale: {decimals: 1},
+				gutter: {left:  2, right: 40, bottom: 10},
+				labels: {position: "right", count: 5},
+				colors:['#FF0000']}
+				});
+			}
+		else {
+			graph[moehre]  = new RGraph.VProgress({
+				id: 'g'+moehre,
+				min: 0,
+				max: 120,
+				value: celsius[moehre],
+				options: {scale: {decimals: 1},
+				gutter: {right: 2, left:  40, bottom: 10},
+				labels: {position: "left" , count: 5},
+				colors:['#FF0000']}
+				});
+			}
+		limitwar[moehre] = 1;
+	}
+else if (limit!=0 &&  celsius[moehre] <= limit  && limitwar[moehre]==1) {
+		 limitwar[moehre]=0;
+		if (moehre & 1) {
+				graph[moehre].colors = '#3C7DC4'.redraw;
+			}
+		else {
+				graph[moehre].colors ='#5A8F29'.redraw;
+			}
+		}
+ausgeben();
+}
 
 // ausgabe von graph und daten, rekursiv 
 function ausgeben () {
@@ -44,17 +86,11 @@ if (schalter == "on" && focusvar ==1) {				// abhaengig ob fenster im focus ist 
 		getData();
 		}
 	else {
-		graph[moehre].value = celsius[moehre];   	// graph[aktueller zählervar wert] mit den daten aus dem celsius array fuellen
-		console.log(celsius[moehre], limit);				
-		if (limit != 0 && celsius[moehre] >= limit) { 		// Limit warnung
-		alert("Limit ueberschritten \n" + "Soll: " + limit + "\nIst: " +celsius[moehre]);
-		$('#thi'+moehre).css("background-color","red");
-		schalter="off";
-		};
-		$('#data'+moehre).text(celsius[moehre]); 		// text feld (span tag) mit wert fuellen
-		graph[moehre].grow();										// graph aktualisieren mit grow animation
-		moehre++;															// zählervar auf naechste graph[id] setzen
-		setTimeout(ausgeben, timevar);					// verzoegern um graph zeit für grow tz geben
+			graph[moehre].value = celsius[moehre];   	// graph[aktueller zählervar wert] mit den daten aus dem celsius array fuellen			
+			$('#data'+moehre).text(celsius[moehre]); 		// text feld (span tag) mit wert fuellen
+			graph[moehre].grow();										// graph aktualisieren mit grow animation
+			moehre++;															// zählervar auf naechste graph[id] setzen
+			setTimeout(grenze, timevar);					// verzoegern um graph zeit für grow tz geben
 	}
 }
 else if (schalter == "off") {											// ausgabe stoppen
@@ -69,14 +105,13 @@ else if (schalter == "error") {
 // user eingabe nutzen um ausgabe zu steuern
 function choose(choice){							
 schalter = choice;
-ausgeben();
+getData();
 }
 function scale() {
 RGraph.Reset(g0);
 var mint=document.getElementById('mint').value; 
 var maxt=document.getElementById('maxt').value;
 graph[0]  = new RGraph.VProgress({id: 'g0',  min: Number(mint), max: Number(maxt), value: 0, options: {scale: {decimals: 1}, gutter: {right: 2, left:  40, bottom: 10}, labels: {position: "left" , count: 5}, colors:['#5A8F29']}}).draw();
-
 }
 
 function limits() {
