@@ -13,8 +13,8 @@ var temparray = {};
 tempid = ["t1","t2","t2","t2","t2","t2","t2","t2","t2","t2","t2","t2","t2","t2","t2","t2"];
 data2 = {temperature_record:[0,0,0,0,0,0,0,0]};
 
-// Datei einlesen für Device config
-function readDatei(txtfile, callback){
+// Devices aus Datei lesen und senden
+function initRead(txtfile){
 	fs.readFile(txtfile, function(err, buffer)
 		{
 			if (err){
@@ -25,6 +25,22 @@ function readDatei(txtfile, callback){
 	// Read data from file (using fast node ASCII encoding).
 	var data = buffer.toString('ascii').split("\n"); 					// trennen nach zeilenumbruch
 	tempid = data;															     	//reihenfolge der scripte wird hier umgestellt
+	var data = {devices:[{list: data}]};
+	console.log("Zuordnung gesetzt!");
+	});
+};
+
+// Datei einlesen und daten senden
+function readDatei(txtfile, callback){
+	fs.readFile(txtfile, function(err, buffer)
+		{
+			if (err){
+			console.log('Datei nicht vorhanden!');
+			 console.error(err);
+			process.exit(1);
+			}
+	// Read data from file (using fast node ASCII encoding).
+	var data = buffer.toString('ascii').split("\n"); 					// trennen nach zeilenumbruch
 	var data = {devices:[{list: data}]};
 	 // Execute call back with data
 	callback(data);
@@ -136,6 +152,7 @@ function(request, response)
     }
 	
 	if (request.url == '/limitsnow.json'){
+			initRead('devices.txt');
             readLimits("limits.txt",function(data){
 			      response.writeHead(200, { "Content-type": "application/json" });		
 			      response.end(JSON.stringify(data), "ascii");
@@ -153,7 +170,7 @@ function(request, response)
 	  
       if (pathfile== '/wdevices.json'){
 		fs.writeFile("devices.txt", devices(daten), function(err) {
-			if(err) {console.log(err);} else {console.log("The file was saved!");}
+			if(err) {console.log(err);} else {console.log("Devices gespeichert!");}
 			}); 
 		response.writeHead(200, { "Content-type": "application/json" });		
 	    response.end();
@@ -170,7 +187,7 @@ function(request, response)
 	  
       if (pathfile== '/wlimits.json'){
 		fs.writeFile("limits.txt", devices(daten), function(err) {
-			if(err) {console.log(err);} else {console.log("The file was saved!");}
+			if(err) {console.log(err);} else {console.log("Limits gespeichert!");}
 			}); 
 		response.writeHead(200, { "Content-type": "application/json" });		
 	    response.end();
@@ -209,6 +226,8 @@ function(request, response)
 });
 
 // Enable server
+initRead('devices.txt');
 server.listen(8000);
+
 console.log('Server running at :8000');
 loopi();
