@@ -11,7 +11,7 @@ var cords = [40,190, 2];											// skala 0 punkte, 190 - 166 ist obere grenze
 
 var tmax = 120;														// max wert für graph temp
 var qmax = 40; 														// max wert für graph durchfluss
-var limitcolor = "grey";											// farbe limit
+var limitcolor = "red";											// farbe limit
 var strokecolor = "transparent";											// farbe umrandung
 
 // ist zahl ungerade?
@@ -45,6 +45,12 @@ $.ajax({
 	error: function(){alert('Der Server antwortet nicht!'); schalter = "error";}
 	});	
 }	
+
+function farbe() {
+limitcolor = $('#farbe').val(); 
+console.log("HIER");
+getLimits();  
+}
 
 function getLimits(){	
 var data;

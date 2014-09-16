@@ -36,12 +36,16 @@
 		<input type="range" min="0" max="1000" value="500" step="100" autocomplete="off" onchange="timevar = this.value"><br><br>
 		<b>Scale:</b><br>Min :<input type="text" size="3" maxlength="3" id="mint"/><br>Max:<input type="text" size="3" maxlength="3" id="maxt"/>
 		<button onClick="scale()">Go</button><br><br>
+		<b>Farbe:</b>
+		<br>
+		<input type="text" size="7" maxlength="7" id="farbe"/>
+		<button onClick="farbe()">Go</button><br><br>
 	</div>	
 </aside>
 <section id="content">			
 			<table class="tg" border="1" bgcolor="#FFFF00">
 			  <tr>
-				<th id="thi1" class="th0"><canvas id="g0"  width="80" height="200">[No canvas support]</canvas><canvas id="g1" width="80"  height="200">[No canvas support]</canvas> <br> <span id="data0">>0</span><span id="dataC0">°C</span><br> <span id="data1" >0</span> <span id="dataC1">l/min</th>
+				<th id="thi1" class="th0"><canvas id="g0"  width="80" height="200">[No canvas support]</canvas><canvas id="g1" width="80"  height="200">[No canvas support]</canvas> <br> <span id="data0">0</span><span id="dataC0">°C</span><br> <span id="data1" >0</span> <span id="dataC1">l/min</th>
 				<th class="th0"><canvas id="g2"  width="80" height="200">[No canvas support]</canvas><canvas id="g3" width="80"  height="200">[No canvas support]</canvas> <br> <span id="data2" >0</span> <span id="dataC2">°C</span> <br> <span id="data3" >0</span> <span id="dataC3">l/min</th>
 				<th class="th0"><canvas id="g4"  width="80" height="200">[No canvas support]</canvas><canvas id="g5" width="80"  height="200">[No canvas support]</canvas> <br> <span id="data4" >0</span> <span id="dataC4">°C</span> <br> <span id="data5" >0</span> <span id="dataC5">l/min</th>
 				<th class="th0"><canvas id="g6"  width="80" height="200">[No canvas support]</canvas><canvas id="g7" width="80"  height="200">[No canvas support]</canvas> <br> <span id="data6" >0</span> <span id="dataC6">°C </span><br> <span id="data7" >0</span> <span id="dataC7">l/min</th>
@@ -55,6 +59,6 @@
 			</table>
 </section>
 <footer></footer>
-<script>getLimits();  getData(); initGraph(); </script>
+<script>getData(); initGraph(); </script>
 </body>
 </html>
