@@ -8,7 +8,12 @@
 <script src="../libraries/jquery-1.8.3.min.js" type="text/javascript"></script>
 <script type="text/javascript">
 
-
+function logger(data) {
+	if ( $('#logbox').attr('checked')  ) {
+		console.log(data);
+		}
+ }
+ 
 // Daten aus json lesen, abhängig von User Eingabe
 function getData(deviceurl){
 	var data;
@@ -24,12 +29,12 @@ function getData(deviceurl){
 			success: function(data){										// nur ausführen wenn getJson (hier ajax) erfolgreich war
 				moehre = 0;
 				devices = data.devices[0].list;
-				console.log('Angekommen', devices);
 				devices.forEach(function(entry) {
-					$("#limit"+moehre).val(devices[moehre]);
-					console.log('Angekommen', devices[moehre], moehre);
+					$("#limit"+moehre).val(devices[moehre]);								
 					moehre++;
 				});
+				logger('Angekommen');		
+				logger(devices);
 			},
 			error: function(){alert('Der Server antwortet nicht!');}
 			});		
@@ -38,11 +43,11 @@ function getData(deviceurl){
 function choose(choice) {
 	if (choice == 'clear') {
 		document.getElementById("form1").reset();		//alle input resetten, id gesteuert
-		console.log('clear');
+		logger('clear');
 	}
 	else if (choice == 'load') {
 		getData();
-		console.log('load');
+		logger('load');
 	}
 }
 </script>
@@ -52,7 +57,7 @@ function choose(choice) {
 <img src="img/banner.png"/></a>
 	<nav>
 		<ul>
-			<li><a href="multi.htm">read temperature</a></li>
+			<li><a href="multi.htm">view</a></li>
 			<li><a href="config1.htm">config</a></li>
 			<li><a href="config2.htm">config 2</a></li>
 		</ul>
@@ -64,7 +69,9 @@ function choose(choice) {
 				<br>
 				<input type="button" id="enter" value="send">		<!--	 id = enter ordnet "input"-button zu -->
 				<button onClick="choose('load')">load</button>
-				<button onClick="choose('clear')">clear</button>
+				<button onClick="choose('clear')">clear</button><br>
+				Log
+				<input type="checkbox" id="logbox">
 			</div>	
 	</aside>
 	<section id="content">
@@ -98,7 +105,7 @@ function choose(choice) {
 </body>
  <script type="text/javascript">
  $('#enter').click(function(){  							<!-- wenn id=enter "click" passiert was -->
-	console.log("send");
+	logger("send");
 	var data =  $('form').serialize() ;					<!-- inhalt von form wird zu string gepackt -->
 	$.ajax({		
 		type: "get",

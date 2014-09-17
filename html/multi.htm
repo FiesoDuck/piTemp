@@ -12,53 +12,75 @@
 <script src="../libraries/RGraph.vprogress.js"></script>
 <script src="../libraries/RGraph.drawing.rect.js"></script>
 <script src="../libraries/piTemp.js" ></script>
-
-
 </head>
 <body>
 <div id="container">
 <img src="img/banner.png"/></a>
 	<nav>
 		<ul>
-			<li><a href="multi.htm">read temperature</a></li>
+			<li><a href="multi.htm">view</a></li>
 			<li><a href="config1.htm">config</a></li>
 			<li><a href="config2.htm">config 2</a></li>
 		</ul>
 	</nav>
-<aside>
-	<div id="buttons">
-		<b>Status:</b><span id="status">off</span>	<br>
-		<b>Limit : </b><span id="limit">0</span>°C<br><br>
-		<b>Control:</b><br>
-		<button onClick="choose('on')">On</button>
-		<button onClick="choose('off')">Off</button><br><br>
-		<b>Timing:</b><br>
-		<input type="range" min="0" max="1000" value="500" step="100" autocomplete="off" onchange="timevar = this.value"><br><br>
-		<b>Scale:</b><br>Min :<input type="text" size="3" maxlength="3" id="mint"/><br>Max:<input type="text" size="3" maxlength="3" id="maxt"/>
-		<button onClick="scale()">Go</button><br><br>
-		<b>Farbe:</b>
-		<br>
-		<input type="text" size="7" maxlength="7" id="farbe"/>
-		<button onClick="farbe()">Go</button><br><br>
-	</div>	
-</aside>
-<section id="content">			
-			<table class="tg" border="1" bgcolor="#FFFF00">
+<!-- <aside>
+	
+</aside> -->
+<section id="gdiv">			
+			<table class="tg" border="1">
 			  <tr>
-				<th id="thi1" class="th0"><canvas id="g0"  width="80" height="200">[No canvas support]</canvas><canvas id="g1" width="80"  height="200">[No canvas support]</canvas> <br> <span id="data0">0</span><span id="dataC0">°C</span><br> <span id="data1" >0</span> <span id="dataC1">l/min</th>
-				<th class="th0"><canvas id="g2"  width="80" height="200">[No canvas support]</canvas><canvas id="g3" width="80"  height="200">[No canvas support]</canvas> <br> <span id="data2" >0</span> <span id="dataC2">°C</span> <br> <span id="data3" >0</span> <span id="dataC3">l/min</th>
-				<th class="th0"><canvas id="g4"  width="80" height="200">[No canvas support]</canvas><canvas id="g5" width="80"  height="200">[No canvas support]</canvas> <br> <span id="data4" >0</span> <span id="dataC4">°C</span> <br> <span id="data5" >0</span> <span id="dataC5">l/min</th>
-				<th class="th0"><canvas id="g6"  width="80" height="200">[No canvas support]</canvas><canvas id="g7" width="80"  height="200">[No canvas support]</canvas> <br> <span id="data6" >0</span> <span id="dataC6">°C </span><br> <span id="data7" >0</span> <span id="dataC7">l/min</th>
+					<th>Kreis 1</th>
+					<th>Kreis 2</th>
+					<th>Kreis 3</th>
+					<th>Kreis 4</th>
+			  <tr>
+			  <tr>
+					<th id="thi1" class="th0"><canvas id="g0"  width="80" height="200">[nope]</canvas><canvas id="g1" width="80"  height="200">[nope]</canvas><br>
+					<span id="data0">0</span><span id="dataC0">°C</span><br><span id="data1">0</span> <span id="dataC1">l/min</th>
+					<th class="th0"><canvas id="g2"  width="80" height="200">[nope]</canvas><canvas id="g3" width="80"  height="200">[nope]</canvas><br>
+					<span id="data2" >0</span> <span id="dataC2">°C</span> <br> <span id="data3" >0</span> <span id="dataC3">l/min</th>
+					<th class="th0"><canvas id="g4"  width="80" height="200">[nope]</canvas><canvas id="g5" width="80"  height="200">[nope]</canvas> <br>
+					<span id="data4" >0</span> <span id="dataC4">°C</span> <br> <span id="data5" >0</span> <span id="dataC5">l/min</th>
+					<th class="th0"><canvas id="g6"  width="80" height="200">[nope]</canvas><canvas id="g7" width="80"  height="200">[nope]</canvas> <br>
+					<span id="data6" >0</span> <span id="dataC6">°C </span><br> <span id="data7" >0</span> <span id="dataC7">l/min</th>
 			  </tr>
+		</table>	  
+<br>
+			  <table class="tg" border="1">
 			  <tr>
-				<th class="th0"><canvas id="g8"  width="80" height="200">[No canvas support]</canvas><canvas id="g9" width="80"  height="200">[No canvas support]</canvas> <br> <span id="data8" >0</span> <span id="dataC8">°C </span><br> <span id="data9" >0</span> <span id="dataC9">l/min</th>
-				<th class="th0"><canvas id="g10" width="80" height="200">[No canvas support]</canvas><canvas id="g11" width="80" height="200">[No canvas support]</canvas> <br> <span id="data10">0</span> <span id="dataC10">°C </span><br> <span id="data11">0</span> <span id="dataC11">l/min</th>
-				<th class="th0"><canvas id="g12" width="80" height="200">[No canvas support]</canvas><canvas id="g13" width="80" height="200">[No canvas support]</canvas> <br> <span id="data12">0</span> <span id="dataC12">°C </span><br> <span id="data13">0</span> <span id="dataC13">l/min</th>
-				<th class="th0"><canvas id="g14" width="80" height="200">[No canvas support]</canvas><canvas id="g15" width="80" height="200">[No canvas support]</canvas> <br> <span id="data14">0</span> <span id="dataC14">°C </span><br> <span id="data15">0</span> <span id="dataC15">l/min</th>
+					<th>Kreis 5</th>
+					<th>Kreis 6</th>
+					<th>Kreis 7</th>
+					<th>Kreis 8</th>
+			  <tr>			  
+			  <tr>
+					<th class="th0"><canvas id="g8"  width="80" height="200">[nope]</canvas><canvas id="g9" width="80"  height="200">[nope]</canvas><br>
+					<span id="data8" >0</span> <span id="dataC8">°C </span><br> <span id="data9" >0</span> <span id="dataC9">l/min</th>
+					<th class="th0"><canvas id="g10" width="80" height="200">[nope]</canvas><canvas id="g11" width="80" height="200">[nope]</canvas> <br>
+					<span id="data10">0</span> <span id="dataC10">°C </span><br> <span id="data11">0</span> <span id="dataC11">l/min</th>
+					<th class="th0"><canvas id="g12" width="80" height="200">[nope]</canvas><canvas id="g13" width="80" height="200">[nope]</canvas> <br>
+					<span id="data12">0</span> <span id="dataC12">°C </span><br> <span id="data13">0</span> <span id="dataC13">l/min</th>
+					<th class="th0"><canvas id="g14" width="80" height="200">[nope]</canvas><canvas id="g15" width="80" height="200">[nope]</canvas> <br>
+					<span id="data14">0</span> <span id="dataC14">°C </span><br> <span id="data15">0</span> <span id="dataC15">l/min</th>
 			  </tr>
 			</table>
 </section>
-<footer></footer>
-<script>getData(); initGraph(); </script>
+<footer>
+<button onClick="hide()">Debug</button>
+	<span id="debug">
+		<b>Status:</b><span id="status">off</span> &nbsp;|&nbsp; 
+		<b>Control:</b>
+		<button onClick="choose('on')">On</button>
+		<button onClick="choose('off')">Off</button> &nbsp; | &nbsp;
+		Turbo: <input type="checkbox" id="turbo" checked onClick="turbo()" >  &nbsp; | &nbsp;
+		Log: <input type="checkbox" id="logbox">  &nbsp; | &nbsp;
+		<b>Scale:</b>Min :<input type="text" size="3" maxlength="3" id="mint"/>Max:<input type="text" size="3" maxlength="3" id="maxt"/>
+		<button onClick="scale()">Go</button> &nbsp; | &nbsp;
+		<b>Farbe:</b>
+		<input type="text" size="7" maxlength="7" id="farbe"/>
+		<button onClick="farbe()">Go</button> &nbsp; | &nbsp;
+	</div>
+</footer>
+<script>hide(); initGraph(); getLimits(); choose("on");</script>
 </body>
 </html>

@@ -42,7 +42,7 @@ img{border:none; }
 .tg td{padding:0px 15px; overflow:hidden;word-break:normal;}
 
 td.data {text-align: center; font-size: 1.2em;}
-th.th0 {background-color: #eee;}
+th.th0 {background-color: #eee; }
 /* ----------container zentriert das layout-------------- */
 
 #container {
@@ -105,11 +105,29 @@ width: 80%;
 padding: 20px;
 background-color: #fff;
 min-height:600px;
+
 }
 p, pre{
 padding:  0 0 20px;
 line-height:1.5em;
 }
+
+/* ----------------- graph div--------------------- */
+
+
+section#gdiv {
+width: 80%;
+padding: 20px;
+background-color: #fff;
+min-height:600px;
+margin-left: auto;
+margin-right: auto;
+}
+p, pre{
+padding:  0 0 20px;
+line-height:1.5em;
+}
+
 /* -------------- side infos ------------- */
 
 aside {

@@ -1,19 +1,37 @@
 var moehre = 0;														// zaehler var. läuft von 1-8 und stellt geräte ID bzw graph ID dar
-var timevar = 1000;												// verzögerung in MS mit der ausgeben() ausgefuehrt wird. -> wenn zu schnell kann ausgabe ruckeln
+var timevar = 10;												// verzögerung in MS mit der ausgeben() ausgefuehrt wird. -> wenn zu schnell kann ausgabe ruckeln
 var graph = {};															// array mit graphen
-var schalter = 0;														// on / off für Status
+var schalter = 1;														// on / off für Status
 var focusvar = 1;													// browserfenster im focus ja/nein
 var limitmax = {};
 var limitmin = {};
 var limitwar = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
 var cords = [40,190, 2];											// skala 0 punkte, 190 - 166 ist obere grenze für höhe -> 24, Höhe / Max Skala * Grenze  //- cords[1] / graph[moehre].max * limit ,
 
-
 var tmax = 120;														// max wert für graph temp
 var qmax = 40; 														// max wert für graph durchfluss
-var limitcolor = "red";											// farbe limit
+var limitcolor = "grey";											// farbe limit
 var strokecolor = "transparent";											// farbe umrandung
 
+function hide() {
+$( "#debug" ).toggle();
+}
+
+function logger(data) {
+	if ( $('#logbox').attr('checked')  ) {
+		console.log(data);
+		}
+ }
+
+function turbo() {
+logger("click");
+	if ( $('#turbo').attr('checked')  ) {
+		timevar = 0;
+		logger("fast");
+		}
+	else {timevar = 150; logger("slow");}
+ }
+ 
 // ist zahl ungerade?
 function isOdd(num) { return num % 2;}
 
@@ -21,11 +39,13 @@ function isOdd(num) { return num % 2;}
 window.onblur= function() {
 focusvar=0;
 $('#status').text("halt");
+logger("loosing focus");
 }
 
 window.onfocus= function() {
 focusvar=1;
 grenze();
+logger("in focus");
 }
 
 // daten von server besorgen
@@ -39,16 +59,17 @@ $.ajax({
 	async: true,						
 	dataType: "json",
 	success: function(data){										// nur ausführen wenn getJson (hier ajax) erfolgreich war sonst zu error:	
+	logger('get ./tnow.json');
 	celsius = data.temperature_record;
 	grenze();
 	},
-	error: function(){alert('Der Server antwortet nicht!'); schalter = "error";}
+	//error: function(){alert('Der Server antwortet nicht!'); schalter = "error";}
 	});	
 }	
 
 function farbe() {
 limitcolor = $('#farbe').val(); 
-console.log("HIER");
+logger("HIER");
 getLimits();  
 }
 
@@ -62,7 +83,7 @@ $.ajax({
 	async: true,						
 	dataType: "json",
 	success: function(data){											// nur ausführen wenn getJson (hier ajax) erfolgreich war sonst zu error:
-	console.log("get ./limitsnow.json");		
+	logger('get ./limitsnow.json');		
 	var ii = 16;
 	var iii=0;
 	for (var key in data) {
@@ -90,7 +111,6 @@ $.ajax({
 }	
 
 function grenze ()  {
-//console.log(moehre, limitmax[moehre+1]);
 if (celsius[moehre] > limitmax[moehre+1] && limitwar[moehre]==0) { 
 			// graph[moehre].set('colors', ['#FF0000']);
 			$('#data'+moehre).css( "color", "red" );
@@ -123,7 +143,7 @@ ausgeben();
 // ausgabe von graph und daten, rekursiv 
 function ausgeben () {
 if (schalter == "on" && focusvar ==1) {				// abhaengig ob fenster im focus ist und "on"
-	$('#status').text("on");
+	$('#status').text("on");										// nicht sehr performant, wird jedes mal neu gezeichnet
 	if (moehre == 16) {											// wenn 8 mal daten ausgegeben worden sind -> neue daten aus getData() holen
 		moehre = 0;
 		getData();
@@ -137,10 +157,12 @@ if (schalter == "on" && focusvar ==1) {				// abhaengig ob fenster im focus ist 
 	}
 }
 else if (schalter == "off") {											// ausgabe stoppen
+	logger('off')
 	$('#status').text("off");
 	moehre = 0;
 	}
 else if (schalter == "error") {
+	logger('error')
 	$('#status').text("ERROR");
 	moehre = 0;	
 	}
