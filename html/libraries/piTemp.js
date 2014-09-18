@@ -1,5 +1,5 @@
 var moehre = 0;														// zaehler var. läuft von 1-8 und stellt geräte ID bzw graph ID dar
-var timevar = 10;												// verzögerung in MS mit der ausgeben() ausgefuehrt wird. -> wenn zu schnell kann ausgabe ruckeln
+var timevar = 100;												// verzögerung in MS mit der ausgeben() ausgefuehrt wird. -> wenn zu schnell kann ausgabe ruckeln
 var graph = {};															// array mit graphen
 var schalter = 1;														// on / off für Status
 var focusvar = 1;													// browserfenster im focus ja/nein
@@ -26,10 +26,10 @@ function logger(data) {
 function turbo() {
 logger("click");
 	if ( $('#turbo').attr('checked')  ) {
-		timevar = 0;
+		timevar = 1000;
 		logger("fast");
 		}
-	else {timevar = 150; logger("slow");}
+	else {timevar = 1500; logger("slow");}
  }
  
 // ist zahl ungerade?
@@ -91,19 +91,23 @@ $.ajax({
 		if (obj.max > tmax) {
 			obj.max = tmax;
 			}
-			
-		if (isOdd(ii) == false) {
-			graph[ii] = new RGraph.Drawing.Rect({id: 'g'+iii, x: cords[0] , 	y: cords[1] - 166 / graph[0].max * obj.max, width: 38, height: 2, options:{strokestyle: strokecolor, fillstyle:limitcolor}}).draw();
-			graph[ii+1] = new RGraph.Drawing.Rect({id: 'g'+iii, x: cords[0] , 	y: cords[1] - 166 / graph[0].max * obj.min, width: 38, height: 2, options:{strokestyle: strokecolor, fillstyle:limitcolor}}).draw();
+		if (obj.max == '' | obj.min == '') {
+			logger("Keine Grenzen geschickt!");
 			}
 		else {
-			graph[ii] = new RGraph.Drawing.Rect({id: 'g'+iii, x: cords[2] , 	y: cords[1] - 166 / graph[1].max * obj.max, width: 38, height: 2, options:{strokestyle: strokecolor, fillstyle:limitcolor}}).draw();
-			graph[ii+1] = new RGraph.Drawing.Rect({id: 'g'+iii, x: cords[2] , 	y: cords[1] - 166 / graph[1].max * obj.min, width: 38, height: 2, options:{strokestyle: strokecolor, fillstyle:limitcolor}}).draw();					
-			}		
-		ii++;
-		iii++;
-		limitmax[ii-16] = obj.max;
-		limitmin[ii-16] = obj.min;
+			if (isOdd(ii) == false) {
+				graph[ii] = new RGraph.Drawing.Rect({id: 'g'+iii, x: cords[0] , 	y: cords[1] - 166 / graph[0].max * obj.max, width: 38, height: 2, options:{strokestyle: strokecolor, fillstyle:limitcolor}}).draw();
+				graph[ii+1] = new RGraph.Drawing.Rect({id: 'g'+iii, x: cords[0] , 	y: cords[1] - 166 / graph[0].max * obj.min, width: 38, height: 2, options:{strokestyle: strokecolor, fillstyle:limitcolor}}).draw();
+				}
+			else {
+				graph[ii] = new RGraph.Drawing.Rect({id: 'g'+iii, x: cords[2] , 	y: cords[1] - 166 / graph[1].max * obj.max, width: 38, height: 2, options:{strokestyle: strokecolor, fillstyle:limitcolor}}).draw();
+				graph[ii+1] = new RGraph.Drawing.Rect({id: 'g'+iii, x: cords[2] , 	y: cords[1] - 166 / graph[1].max * obj.min, width: 38, height: 2, options:{strokestyle: strokecolor, fillstyle:limitcolor}}).draw();					
+				}		
+			ii++;
+			iii++;
+			limitmax[ii-16] = obj.max;
+			limitmin[ii-16] = obj.min;
+			}
 		}
 	},
 	error: function(){alert('Der Server antwortet nicht!'); schalter = "error";}
@@ -111,7 +115,10 @@ $.ajax({
 }	
 
 function grenze ()  {
-if (celsius[moehre] > limitmax[moehre+1] && limitwar[moehre]==0) { 
+if (limitmax[moehre+1]  == '' | limitmin[moehre+1]=='') {
+logger("Keine Grenzen");
+}
+else if (celsius[moehre] > limitmax[moehre+1] && limitwar[moehre]==0) { 
 			// graph[moehre].set('colors', ['#FF0000']);
 			$('#data'+moehre).css( "color", "red" );
 			$('#dataC'+moehre).css( "color", "red" );
@@ -153,6 +160,7 @@ if (schalter == "on" && focusvar ==1) {				// abhaengig ob fenster im focus ist 
 			$('#data'+moehre).text(celsius[moehre]); 		// text feld (span tag) mit wert fuellen
 			graph[moehre].grow();										// graph aktualisieren mit grow animation
 			moehre++;															// zählervar auf naechste graph[id] setzen
+			logger("zeichnen!");
 			setTimeout(grenze, timevar);					// verzoegern um graph zeit für grow tz geben
 	}
 }

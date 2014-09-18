@@ -10,7 +10,7 @@ padding: 0;
 box-sizing: border-box;
 }
 /* render html5 elements as block 
-   rendert html5 elemente als block  */
+rendert html5 elemente als block   */
 
 header, footer, section, aside, nav, article { display: block;}
 
@@ -37,9 +37,9 @@ margin: 0 0 20px;
 img.download {vertical-align:middle;}
 img{border:none; }
 
-.tg  {border-collapse:collapse;border-spacing:0;margin:auto;}
-.tg th{padding:0px 15px; overflow:hidden;word-break:normal;}
-.tg td{padding:0px 15px; overflow:hidden;word-break:normal;}
+.tg  {border-collapse:collapse;border-spacing:0;margin:auto; table-layout:fixed; width: 90%; background-color: #eee; }
+.tg th{padding:0px 15px; :hidden;word-break:normal; background-color: #FFFFFF; }
+.tg td{text-align: center; overflow:hidden; font-weight: bold;}
 
 td.data {text-align: center; font-size: 1.2em;}
 th.th0 {background-color: #eee; }
