@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>piTemp Konfiguration</title>
+<META HTTP-EQUIV="Pragma" CONTENT="no-cache">
+<META HTTP-EQUIV="Expires" CONTENT="-1">
+<link rel="stylesheet" type="text/css" href="style.css">
+<script src="../libraries/jquery-1.8.3.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+
+function logger(data) {
+	if ( $('#logbox').attr('checked')  ) {
+		console.log(data);
+		}
+ }
+ 
+// Daten aus json lesen, abhängig von User Eingabe
+function getData(deviceurl){
+	var data;
+	var input = document.createElement('input');
+	var devices = 0;
+	input.type = "text"; 
+		$.ajax({
+			type: "GET",
+			url: 'rlimits.json',													// Daten-Stream url
+			data: data,															// Variable für json Container
+			async: true,										
+			dataType: "json",
+			success: function(data){										// nur ausführen wenn getJson (hier ajax) erfolgreich war
+				moehre = 0;
+				devices = data.devices[0].list;
+				devices.forEach(function(entry) {
+					$("#limit"+moehre).val(devices[moehre]);								
+					moehre++;
+				});
+				logger('Angekommen');		
+				logger(devices);
+			},
+			error: function(){alert('Der Server antwortet nicht!');}
+			});		
+}	
+
+function choose(choice) {
+	if (choice == 'clear') {
+		document.getElementById("form1").reset();		//alle input resetten, id gesteuert
+		logger('clear');
+	}
+	else if (choice == 'load') {
+		getData();
+		logger('load');
+	}
+}
+</script>
+</head>
+<body>
+<div id="container">
+<img src="img/banner.png"/></a>
+	<nav>
+		<ul>
+			<li><a href="multi.htm">view</a></li>
+			<li><a href="config1.htm">config</a></li>
+			<li><a href="config2.htm">config 2</a></li>
+		</ul>
+	</nav>
+	<aside>
+		<div id="leer"></div>
+			<div id="buttons">
+				<b>control:</b>
+				<br>
+				<input type="button" id="enter" value="send">		<!--	 id = enter ordnet "input"-button zu -->
+				<button onClick="choose('load')">load</button>
+				<button onClick="choose('clear')">clear</button><br>
+				Log
+				<input type="checkbox" id="logbox">
+			</div>	
+	</aside>
+	<section id="content">
+		
+		<form id="form1">
+		<article  style="float:left;width:50%">
+					<p>Device 1: <input id="limit0" name="limit0" type="text" size="10" maxlength="10" autocomplete="off"><input id="limit1" name="limit1" type="text" size="10" maxlength="10" autocomplete="off"></p>
+					<p>Device 2: <input id="limit2" name="limit2" type="text" size="10" maxlength="10" autocomplete="off"><input id="limit3" name="limit3" type="text" size="10" maxlength="10" autocomplete="off"></p>
+					<p>Device 3: <input id="limit4" name="limit4" type="text" size="10" maxlength="10" autocomplete="off"><input id="limit5" name="limit5" type="text" size="10" maxlength="10" autocomplete="off"></p>
+					<p>Device 4: <input id="limit6" name="limit6" type="text" size="10" maxlength="10" autocomplete="off"><input id="limit7" name="limit7" type="text" size="10" maxlength="10" autocomplete="off"></p>
+					<p>Device 5: <input id="limit8" name="limit8" type="text" size="10" maxlength="10" autocomplete="off"><input id="limit9" name="limit9" type="text" size="10" maxlength="10" autocomplete="off"></p>
+					<p>Device 6: <input id="limit10" name="limit10" type="text" size="10" maxlength="10" autocomplete="off"><input id="limit11" name="limit11" type="text" size="10" maxlength="10" autocomplete="off"></p>
+					<p>Device 7: <input id="limit12" name="limit12" type="text" size="10" maxlength="10" autocomplete="off"><input id="limit13" name="limit13" type="text" size="10" maxlength="10" autocomplete="off"></p>
+					<p>Device 8: <input id="limit14" name="limit14" type="text" size="10" maxlength="10" autocomplete="off"><input id="limit15" name="limit15" type="text" size="10" maxlength="10" autocomplete="off"></p>
+		</article>						
+		<article  style="float:right;width:50%">
+					<p>Device 9 : <input id="limit16" name="limit16" type="text" size="10" maxlength="10" autocomplete="off"><input id="limit17" name="limit17" type="text" size="10" maxlength="10" autocomplete="off"></p>
+					<p>Device 10:<input id="limit18" name="limit18" type="text" size="10" maxlength="10" autocomplete="off"><input id="limit19" name="limit19" type="text" size="10" maxlength="10" autocomplete="off"></p>
+					<p>Device 11:<input id="limit20" name="limit20" type="text" size="10" maxlength="10" autocomplete="off"><input id="limit21" name="limit21" type="text" size="10" maxlength="10" autocomplete="off"></p>
+					<p>Device 12:<input id="limit22" name="limit22" type="text" size="10" maxlength="10" autocomplete="off"><input id="limit23" name="limit23" type="text" size="10" maxlength="10" autocomplete="off"></p>
+					<p>Device 13:<input id="limit24" name="limit24" type="text" size="10" maxlength="10" autocomplete="off"><input id="limit25" name="limit25" type="text" size="10" maxlength="10" autocomplete="off"></p>
+					<p>Device 14:<input id="limit26" name="limit26" type="text" size="10" maxlength="10" autocomplete="off"><input id="limit27" name="limit27" type="text" size="10" maxlength="10" autocomplete="off"></p>
+					<p>Device 15:<input id="limit28" name="limit28" type="text" size="10" maxlength="10" autocomplete="off"><input id="limit29" name="limit29" type="text" size="10" maxlength="10" autocomplete="off"></p>
+					<p>Device 16:<input id="limit30" name="limit30" type="text" size="10" maxlength="10" autocomplete="off"><input id="limit31" name="limit31" type="text" size="10" maxlength="10" autocomplete="off"></p>			
+		</article>	
+		</form>
+ 	</section>
+ <footer>		
+ </footer>
+</div>
+</body>
+ <script type="text/javascript">
+ $('#enter').click(function(){  							<!-- wenn id=enter "click" passiert was -->
+	logger("send");
+	var data =  $('form').serialize() ;					<!-- inhalt von form wird zu string gepackt -->
+	$.ajax({		
+		type: "get",
+		url: "wlimits.json",											<!-- hier wirds hingeschickt -->
+		data: data,
+		success: function(){alert('Daten wurden gespeichert!');},
+		error: function(){alert('Der Server antwortet nicht!');}
+    });
+return false;														<!-- verhindert die default action des click handler, DOM könnte auch triggern sonst --!>
+});   
+</script>	
+</html>
