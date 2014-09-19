@@ -19,6 +19,11 @@ var dbfile= "data.db";
 var db = new sqlite3.Database(dbfile);
 var exists = fs.existsSync(dbfile);
 
+//Barcode reader
+var readline = require('readline');
+var check = 0;
+
+
 // ist zahl ungerade?
 function isOdd(num) { return num % 2;}
 
@@ -84,6 +89,19 @@ child = exec(device, function (error, stdout, stderr) {
 	loopi();
 	});
 };
+
+function readBar(test, callback) {
+	var rl = readline.createInterface({
+	input: process.stdin,
+	output: process.stdout
+	});
+	rl.question("Bitte Seriennummer scannen: ", function(answer) {
+	console.log("Die Nummer lautet:", answer);
+	rl.close();
+	callback(answer);
+	});
+	//console.log(answer);
+}
 
 // Ruft readTemp auf.
 function loopi(){
@@ -228,7 +246,17 @@ function(request, response)
 		response.writeHead(200, { "Content-type": "application/json" });		
 	    response.end();
 		return;
-		}		
+		}
+
+	if (pathfile== '/bar.json'){
+        readBar("test", function(answer){
+			      response.writeHead(200, { "Content-type": "application/json" });		
+			      response.end(JSON.stringify(answer), "ascii");
+				  console.log("ende");
+               });
+	console.log("später");
+    return;
+    }		
 		
 		// Test to see if it's a database query
 		if (pathfile == '/temperature_query.json'){
