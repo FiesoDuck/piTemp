@@ -77,7 +77,6 @@ child = exec(device, function (error, stdout, stderr) {
 	var temp = {};
 	temp[tempid] = stdout;
 	temp[tempid] = Math.round(temp[tempid] * 10) / 10;
-	console.log(moehre + ": " + temp[tempid]);
 	database(moehre, temp[tempid]);	
 	callback(temp[tempid]);
 	if (moehre <= 14) {moehre++}
