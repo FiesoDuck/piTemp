@@ -2,32 +2,46 @@
 var fs = require('fs');
 var sys = require('sys');
 var http = require('http');
+var util = require('util');
 var exec = require('child_process').exec;
 var nodestatic = require('node-static');
 var sqlite3 = require('sqlite3').verbose();
-var db = new sqlite3.Database('./data.db');
+//Webserver
 var staticServer = new nodestatic.Server("html"); // Setup static server for "html" directory
 var child;
 var moehre = 0;
 var temparray = {};
-tempid = ["t1","t2","t2","t2","t2","t2","t2","t2","t2","t2","t2","t2","t2","t2","t2","t2"];
-data2 = {temperature_record:[0,0,0,0,0,0,0,0]};
+var tempid = ["t4","t2","t2","t2","t2","t2","t2","t2","t2","t2","t2","t2","t2","t2","t2","t2"];
+var data2 = {temperature_record:[0,0,0,0,0,0,0,0]};
+
+// Database
+var dbfile= "data.db";
+var db = new sqlite3.Database(dbfile);
+var exists = fs.existsSync(dbfile);
+
+// ist zahl ungerade?
+function isOdd(num) { return num % 2;}
+
+// Prüfen ob DB-Datei existiert, sonst Datei erzeugen
+if(!exists) {
+  console.log("Creating DB file.");
+  fs.openSync(dbfile, "w");
+}
 
 // Devices aus Datei lesen und senden
 function initRead(txtfile){
-	fs.readFile(txtfile, function(err, buffer)
-		{
-			if (err){
-			console.log('Datei nicht vorhanden!');
-			 console.error(err);
-			process.exit(1);
-			}
+	fs.readFile(txtfile, function(err, buffer)		{
+			if (err) {
+				console.log('Datei nicht vorhanden!');
+				 console.error(err);
+				process.exit(1);
+				}
 	// Read data from file (using fast node ASCII encoding).
 	var data = buffer.toString('ascii').split("\n"); 					// trennen nach zeilenumbruch
 	tempid = data;															     	//reihenfolge der scripte wird hier umgestellt
 	var data = {devices:[{list: data}]};
-	console.log("Zuordnung gesetzt!");
 	});
+	loopi();
 };
 
 // Datei einlesen und daten senden
@@ -57,13 +71,14 @@ function devices(daten){
 // Temperatur auslesen. device steht für das script, welches den richtigen sensor abfragt.
 // da dies asynchron passiert wird callback benoetigt, bei callback wird die temp
 // zurück an die stelle des aufrufs geschickt
-
 function readTemp(tempid, callback){
 var device = "python scripts/./"+[tempid]+".py";
 child = exec(device, function (error, stdout, stderr) {
 	var temp = {};
 	temp[tempid] = stdout;
 	temp[tempid] = Math.round(temp[tempid] * 10) / 10;
+	console.log(moehre + ": " + temp[tempid]);
+	database(moehre, temp[tempid]);	
 	callback(temp[tempid]);
 	if (moehre <= 14) {moehre++}
 	else {moehre = 0};
@@ -81,6 +96,7 @@ readTemp(tempid[moehre], function(temp){
 );	
 }
 
+// Grenzen auslesen
 function readLimits(txtfile, callback){
 	fs.readFile(txtfile, function(err, buffer)
 		{
@@ -116,23 +132,44 @@ function readLimits(txtfile, callback){
 }
 
 // muss noch implementiert werden
-function database() {
+function database(device, data) {
 db.serialize(function() {
-  db.run("CREATE TABLE data (info TEXT)");
-
-  var stmt = db.prepare("INSERT INTO data VALUES (?)");
-  for (var i = 0; i < 10; i++) {
-      stmt.run("set" + i);
-  }
-  stmt.finalize();
-
-  db.each("SELECT rowid AS id, info FROM data", function(err, row) {
-      console.log(row.id + ": " + row.info);
-  });
+	if(!exists) {
+		db.run("CREATE TABLE temp_records (device TEXT, time BIGINT primary key, temp real)");
+		db.run("CREATE TABLE flow_records   (device TEXT, time DATE, flow TEXT)");
+		exists=1;
+	}
+	if (isOdd(device) == false) {
+		var stmt = db.prepare("INSERT INTO temp_records (device, time, temp) VALUES (?, ?, ?)");
+	}
+	
+	else {
+		var stmt = db.prepare("INSERT INTO flow_records (device, time, flow) VALUES (?, ?, ?)");
+	}
+	stmt.run({1: device, 2: Date.now(), 3: data});
+	// db.each("SELECT * FROM temp_records", function(err, row) {
+	// console.log(util.inspect(row, false, null));
+	// });
 });
-
-db.close();
 }
+
+// Get temperature records from database
+function selectTemp(num_records, start_date, callback){
+   // - Num records is an SQL filter from latest record back trough time series, 
+   // - start_date is the first date in the time-series required, 
+   // - callback is the output function
+   var current_temp = db.all("SELECT * FROM (SELECT * FROM temp_records WHERE time > (strftime('%s',?)*1000) ORDER BY time DESC LIMIT ?) ORDER BY time;", start_date, num_records,
+      function(err, rows){
+         if (err){
+			   response.writeHead(500, { "Content-type": "text/html" });
+			   response.end(err + "\n");
+			   console.log('Error serving querying database. ' + err);
+			   return;
+				      }
+         data = {temperature_record:[rows]}
+         callback(data);
+   });
+};
 
 // Setup node http server
 var server = http.createServer(
@@ -152,7 +189,7 @@ function(request, response)
     }
 	
 	if (request.url == '/limitsnow.json'){
-			initRead('devices.txt');
+			//initRead('devices.txt'); 												erstmal auskommentiert, warum war das hier drin??? besser mal im auge behalten
             readLimits("limits.txt",function(data){
 			      response.writeHead(200, { "Content-type": "application/json" });		
 			      response.end(JSON.stringify(data), "ascii");
@@ -194,13 +231,32 @@ function(request, response)
 		return;
 		}		
 		
-	// damit bei aufruf der seite direkt die richtigen werte ausgegeben werden, fülle
-	// ich das "ausgabe array" mit daten aus der datein devices.txt
-	// implementierung fehlt noch
-    /*if (pathfile== '/multi.htm'){
-			readDatei("devices.txt", function(data){console.log("passiert");});
-		}
-	*/
+		// Test to see if it's a database query
+		if (pathfile == '/temperature_query.json'){
+         // Test to see if number of observations was specified as url query
+         if (query.num_obs){
+            var num_obs = parseInt(query.num_obs);
+         }
+         else{
+         // If not specified default to 20. Note use -1 in query string to get all.
+            var num_obs = -1;
+         }
+         if (query.start_date){
+            var start_date = query.start_date;
+         }
+         else{
+            var start_date = '1970-01-01T00:00';
+         }   
+         // Send a message to console log
+         console.log('Database query request from '+ request.connection.remoteAddress +' for ' + num_obs + ' records from ' + start_date+'.');
+         // call selectTemp function to get data from database
+         selectTemp(num_obs, start_date, function(data){
+            response.writeHead(200, { "Content-type": "application/json" });		
+	         response.end(JSON.stringify(data), "ascii");
+         });
+      return;
+      }
+
 	// Handler for favicon.ico requests
 	if (pathfile == '/img/favicon.ico'){
 		response.writeHead(200, {'Content-Type': 'image/x-icon'});
@@ -228,6 +284,4 @@ function(request, response)
 // Enable server
 initRead('devices.txt');
 server.listen(8000);
-
 console.log('Server running at :8000');
-loopi();

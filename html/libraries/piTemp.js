@@ -1,5 +1,5 @@
 var moehre = 0;														// zaehler var. läuft von 1-8 und stellt geräte ID bzw graph ID dar
-var timevar = 100;												// verzögerung in MS mit der ausgeben() ausgefuehrt wird. -> wenn zu schnell kann ausgabe ruckeln
+var timevar = 10;														// verzögerung in MS mit der ausgeben() ausgefuehrt wird. -> wenn zu schnell kann ausgabe ruckeln
 var graph = {};															// array mit graphen
 var schalter = 1;														// on / off für Status
 var focusvar = 1;													// browserfenster im focus ja/nein
@@ -26,7 +26,7 @@ function logger(data) {
 function turbo() {
 logger("click");
 	if ( $('#turbo').attr('checked')  ) {
-		timevar = 1000;
+		timevar = 10;
 		logger("fast");
 		}
 	else {timevar = 1500; logger("slow");}
@@ -149,9 +149,9 @@ ausgeben();
 
 // ausgabe von graph und daten, rekursiv 
 function ausgeben () {
-if (schalter == "on" && focusvar ==1) {				// abhaengig ob fenster im focus ist und "on"
-	$('#status').text("on");										// nicht sehr performant, wird jedes mal neu gezeichnet
-	if (moehre == 16) {											// wenn 8 mal daten ausgegeben worden sind -> neue daten aus getData() holen
+if (schalter == "on" && focusvar ==1) {						// abhaengig ob fenster im focus ist und "on"
+	$('#status').text("on");												// nicht sehr performant, wird jedes mal neu gezeichnet
+	if (moehre == 16) {													// wenn 8 mal daten ausgegeben worden sind -> neue daten aus getData() holen
 		moehre = 0;
 		getData();
 		}
@@ -161,10 +161,10 @@ if (schalter == "on" && focusvar ==1) {				// abhaengig ob fenster im focus ist 
 			graph[moehre].grow();										// graph aktualisieren mit grow animation
 			moehre++;															// zählervar auf naechste graph[id] setzen
 			logger("zeichnen!");
-			setTimeout(grenze, timevar);					// verzoegern um graph zeit für grow tz geben
+			setTimeout(grenze, timevar);							// verzoegern um graph zeit für grow tz geben
 	}
 }
-else if (schalter == "off") {											// ausgabe stoppen
+else if (schalter == "off") {												// ausgabe stoppen
 	logger('off')
 	$('#status').text("off");
 	moehre = 0;
