@@ -10,8 +10,10 @@ var sqlite3 = require('sqlite3').verbose();
 var staticServer = new nodestatic.Server("html"); // Setup static server for "html" directory
 var child;
 var moehre = 0;
+var toggle = 0;
+var sinmoehre = 10;
 var temparray = {};
-var tempid = ["t4","t2","t2","t2","t2","t2","t2","t2","t2","t2","t2","t2","t2","t2","t2","t2"];
+var tempid = ["t2","t2","t2","t2","t2","t2","t2","t2","t2","t2","t2","t2","t2","t2","t2","t2"];
 var data2 = {temperature_record:[0,0,0,0,0,0,0,0]};
 
 // Database
@@ -22,7 +24,6 @@ var exists = fs.existsSync(dbfile);
 //Barcode reader
 var readline = require('readline');
 var check = 0;
-
 
 // ist zahl ungerade?
 function isOdd(num) { return num % 2;}
@@ -77,6 +78,23 @@ function devices(daten){
 // da dies asynchron passiert wird callback benoetigt, bei callback wird die temp
 // zurück an die stelle des aufrufs geschickt
 function readTemp(tempid, callback){
+if (tempid == "sin") {																// Alles mit SIN ist nur für Fake-Zahlen in sinus form
+	//console.log(sinmoehre);
+	var temp = {};
+	temp[tempid] = Math.round(Math.sin(sinmoehre)  * 10 +  20) ;
+	if (toggle == 0) {sinmoehre -= 0.5};
+	if (toggle == 1) {sinmoehre += 0.5};
+	if (sinmoehre >= 10) {toggle = 0}
+	else if (sinmoehre <= -10) {toggle = 1};
+	
+	database(moehre, temp[tempid]);	
+	callback(temp[tempid]);
+	
+	if (moehre <= 14) {moehre++}
+	else {moehre = 0};
+	loopi();
+}
+else {
 var device = "python scripts/./"+[tempid]+".py";
 child = exec(device, function (error, stdout, stderr) {
 	var temp = {};
@@ -88,6 +106,7 @@ child = exec(device, function (error, stdout, stderr) {
 	else {moehre = 0};
 	loopi();
 	});
+}
 };
 
 function readBar(test, callback) {
@@ -95,12 +114,12 @@ function readBar(test, callback) {
 	input: process.stdin,
 	output: process.stdout
 	});
+	rl.prompt();
 	rl.question("Bitte Seriennummer scannen: ", function(answer) {
 	console.log("Die Nummer lautet:", answer);
 	rl.close();
 	callback(answer);
 	});
-	//console.log(answer);
 }
 
 // Ruft readTemp auf.
@@ -231,6 +250,23 @@ function(request, response)
 		return;
 		}
 
+      if (pathfile== '/wbarconf.json'){
+		fs.writeFile("bardevices.txt", devices(daten), function(err) {
+			if(err) {console.log(err);} else {console.log("Barcodes gespeichert!");}
+			}); 
+		response.writeHead(200, { "Content-type": "application/json" });		
+	    response.end();
+		return;
+		}		
+
+	if (pathfile== '/rbarconf.json'){
+            readDatei("bardevices.txt",function(data){
+			      response.writeHead(200, { "Content-type": "application/json" });		
+			      response.end(JSON.stringify(data), "ascii");
+               });
+    return;
+    }		
+		
 	if (pathfile== '/rlimits.json'){
             readDatei("limits.txt",function(data){
 			      response.writeHead(200, { "Content-type": "application/json" });		
@@ -254,8 +290,7 @@ function(request, response)
 			      response.end(JSON.stringify(answer), "ascii");
 				  console.log("ende");
                });
-	console.log("später");
-    return;
+  return;
     }		
 		
 		// Test to see if it's a database query

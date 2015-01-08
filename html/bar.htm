@@ -8,6 +8,23 @@
 <script src="../libraries/jquery-1.8.3.min.js" type="text/javascript"></script>
 <script type="text/javascript">
 
+function logger(data) {
+	if ( $('#logbox').attr('checked')  ) {
+		console.log(data);
+		}
+ }
+ 
+function choose(choice) {
+	if (choice == 'clear') {
+			document.getElementById("form1").reset();		//alle input resetten, id gesteuert
+			for (var num = 0; num <= 7; num++)
+			$("#barspan"+num).text("");
+		}
+	else if (choice == 'load') {
+		getData();
+	}
+}
+
 function readBar(num) {
 var data;
 var jsonurl = './bar.json';
@@ -17,17 +34,51 @@ $.ajax({
 	data: data,																// Variable für json Container
 	async: true,						
 	dataType: "json",
+	timeout: 10000,														// timeout in ms. manchmal wird antwort vom server nicht erkannt
 	success: function(data){										// nur ausführen wenn getJson (hier ajax) erfolgreich war sonst zu error:	
-	var bar1 = data;
-	console.log("hallo");
-	console.log(bar1);
-	$("#bar"+num).val(bar1);
+	var barvalue = data;
+	var isnum = /^\d+$/.test(barvalue);
+	console.log(isnum);
+	console.log(barvalue.length);
+	if (!isnum || barvalue.length != 18) {					// format der seriennummer prüfen
+		$("#barspan"+num).css( "color", "red" );
+		$("#barspan"+num).text("error!")
+	}
+	else {
+		$("#barspan"+num).css( "color", "green" );
+		$("#barspan"+num).text("ok!")
+	}
+	$("#bar"+num).val(barvalue);
 	},
 	error: function(){alert('Der Server antwortet nicht!'); schalter = "error";}
 	});	
 }	
 
- 
+// Daten aus json lesen, abhängig von User Eingabe
+function getData(deviceurl){
+	var data;
+	var input = document.createElement('input');
+	var devices = 0;
+	input.type = "text"; 
+		$.ajax({
+			type: "GET",
+			url: 'rbarconf.json',													// Daten-Stream url
+			data: data,															// Variable für json Container
+			async: true,										
+			dataType: "json",
+			success: function(data){										// nur ausführen wenn getJson (hier ajax) erfolgreich war
+				moehre = 0;
+				devices = data.devices[0].list;
+				logger('Angekommen', devices);
+				devices.forEach(function(entry) {
+					$("#bar"+moehre).val(devices[moehre]);
+					logger('Angekommen', devices[moehre], moehre);
+					moehre++;
+				});
+			},
+			error: function(){alert('Der Server antwortet nicht!');}
+			});		
+}	
  </script>
 
 </head>
@@ -44,19 +95,57 @@ $.ajax({
 			<li><a href="bar.htm">barcode config</a></li>
 		</ul>
 	</nav>
-
-	<section id="gdiv">
-		<button onClick="readBar(1)">read</button>
-		<input id="bar1" name="bar1" type="text" size="30" maxlength="30" autocomplete="off"> <br><br>
-		<button onClick="readBar(2)">read</button>
-		<input id="bar2" name="bar2" type="text" size="30" maxlength="30" autocomplete="off"><br><br>
-		<button onClick="readBar(3)">read</button>
-		<input id="bar3" name="bar3" type="text" size="30" maxlength="30" autocomplete="off"><br><br>
-		<button onClick="readBar(4)">read</button>
-		<input id="bar4" name="bar4" type="text" size="30" maxlength="30" autocomplete="off"><br><br>
- 	</section>
+	<aside>
+		<div id="leer"></div>
+			<div id="buttons">
+				<b>control:</b>
+				<br>
+				<input type="button" id="enter" value="send">		<!--	 id = enter ordnet "input"-button zu -->
+				<button onClick="choose('load')">load</button>
+				<button onClick="choose('clear')">clear</button><br>
+				<button onClick="readBar(0)">read Sensor 1</button>
+				<button onClick="readBar(4)">read Sensor 5</button>
+				<button onClick="readBar(1)">read Sensor 2</button>
+				<button onClick="readBar(5)">read Sensor 6</button>
+				<button onClick="readBar(4)">read Sensor 3</button>
+				<button onClick="readBar(6)">read Sensor 7</button>
+				<button onClick="readBar(3)">read Sensor 4</button>
+				<button onClick="readBar(7)">read Sensor 8</button>	
+			</div>	
+	</aside>	
+	<section id="content">	
+		<form id="form1">
+			<article  style="float:left;width:50%">
+				<p>Sensor 1: <input id="bar0" name="bar0" type="text" size="30" maxlength="30" autocomplete="off" ><span id="barspan0"></span></p>
+				<p>Sensor 2: <input id="bar1" name="bar1" type="text" size="30" maxlength="30" autocomplete="off" ><span id="barspan1"></p></span>
+				<p>Sensor 3: <input id="bar2" name="bar2" type="text" size="30" maxlength="30" autocomplete="off" ><span id="barspan2"></p></span>
+				<p>Sensor 4: <input id="bar3" name="bar3" type="text" size="30" maxlength="30" autocomplete="off" ><span id="barspan3"></p></span>
+			</article>						
+			<article  style="float:right;width:50%">			
+				<p>Sensor 5: <input id="bar4" name="bar4" type="text" size="30" maxlength="30" autocomplete="off" ><span id="barspan4"></p></span>
+				<p>Sensor 6: <input id="bar5" name="bar5" type="text" size="30" maxlength="30" autocomplete="off" ><span id="barspan5"></p></span>
+				<p>Sensor 7: <input id="bar6" name="bar6" type="text" size="30" maxlength="30" autocomplete="off" ><span id="barspan6"></p></span>
+				<p>Sensor 8: <input id="bar7" name="bar7" type="text" size="30" maxlength="30" autocomplete="off" ><span id="barspan7"></p></span>
+			</article>		
+		</form>
+		</section>
  <footer>		
  </footer>
 </div>
 </body>
+
+ <script type="text/javascript">
+ $('#enter').click(function(){  							<!-- wenn id=enter "click" passiert was -->
+	logger("send");
+	var data =  $('form').serialize() ;					<!-- inhalt von form wird zu string gepackt -->
+	$.ajax({		
+		type: "get",
+		url: "wbarconf.json",											<!-- hier wirds hingeschickt -->
+		data: data,
+		success: function(){alert('Daten wurden gespeichert!');},
+		error: function(){alert('Der Server antwortet nicht!');}
+    });
+return false;														<!-- verhindert die default action des click handler, DOM könnte auch triggern sonst --!>
+});   
+</script>	
 </html>

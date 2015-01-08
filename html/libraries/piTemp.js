@@ -1,5 +1,5 @@
 var moehre = 0;														// zaehler var. läuft von 1-8 und stellt geräte ID bzw graph ID dar
-var timevar = 10;														// verzögerung in MS mit der ausgeben() ausgefuehrt wird. -> wenn zu schnell kann ausgabe ruckeln
+var timevar = 200;														// verzögerung in MS mit der ausgeben() ausgefuehrt wird. -> wenn zu schnell kann ausgabe ruckeln
 var graph = {};															// array mit graphen
 var schalter = 1;														// on / off für Status
 var focusvar = 1;													// browserfenster im focus ja/nein
